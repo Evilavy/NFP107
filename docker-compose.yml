@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: nfp107_db
+    environment:
+      POSTGRES_USER: nfp_user
+      POSTGRES_PASSWORD: nfp_password
+      POSTGRES_DB: nfp_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+
+  api:
+    build: .
+    container_name: nfp107_api
+    depends_on:
+      - db
+    environment:
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: nfp_user
+      DB_PASSWORD: nfp_password
+      DB_NAME: nfp_db
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:
+
+
