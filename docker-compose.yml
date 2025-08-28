@@ -11,12 +11,19 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nfp_user -d nfp_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
 
   api:
     build: .
     container_name: nfp107_api
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       PORT: 3000
       DB_HOST: db
