@@ -53,6 +53,51 @@
           "409": { "description": "Conflict (email already exists)" }
         }
       }
+    },
+    "/enseignants": {
+      "get": {
+        "summary": "Liste des enseignants",
+        "tags": ["Enseignants"],
+        "responses": {
+          "200": {
+            "description": "Une liste d'enseignants",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Enseignant" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer un enseignant",
+        "tags": ["Enseignants"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEnseignantInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Enseignant créé",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Enseignant" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflict (email already exists)" }
+        }
+      }
     }
   },
   "components": {
@@ -72,6 +117,31 @@
         "properties": {
           "name": { "type": "string" },
           "email": { "type": "string", "format": "email" }
+        }
+      },
+      "Enseignant": {
+        "type": "object",
+        "properties": {
+          "identifiant": { "type": "string" },
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "adresse": { "type": "string" },
+          "telephone": { "type": "string", "format": "phone_number" },
+          "mdp": { "type": "string", "format": "password" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateEnseignantInput": {
+        "type": "object",
+        "required": ["nom", "prenom", "email", "adresse", "telephone", "mdp"],
+        "properties": {
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "adresse": { "type": "string" },
+          "telephone": { "type": "string", "format": "phone_number" },
+          "mdp": { "type": "string", "format": "password" }
         }
       }
     }
