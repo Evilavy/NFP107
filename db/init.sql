@@ -336,7 +336,16 @@ BEFORE INSERT ON Planning
 FOR EACH ROW
 EXECUTE FUNCTION check_enseigne_ue_planning();
 
+/*
+
+-- Promo 2 n’a pas l’UE INF101
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
+VALUES ('10:00', '12:00', '2025-09-15', 'jmartin', 2, 'INF101', 2);
+-- ❌ Doit lever l’exception :
+-- "Il n'y a aucun étudiant de cette promo qui suit cette UE."
 
 
-
-
+-- TEST VALIDE
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
+VALUES ('09:00', '11:00', '2024-10-01', 'mdupont', 1, 'UE101', 1);
+*/
