@@ -1,14 +1,7 @@
 -- Activer l'extension pgcrypto
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-CREATE TABLE Promo(
-   Id_Promo SERIAL,
-   nom VARCHAR(50),
-   annee_universitaire VARCHAR(50),
-   identifiant VARCHAR(50) NOT NULL,
-   PRIMARY KEY(Id_Promo),
-   FOREIGN KEY(identifiant) REFERENCES Professeur(identifiant)
-);
+
 
 
 CREATE TABLE Filiere(
@@ -56,6 +49,15 @@ CREATE TABLE Professeur(
    identifiant VARCHAR(50),
    PRIMARY KEY(identifiant),
    FOREIGN KEY(identifiant) REFERENCES Utilisateur(identifiant)
+);
+
+CREATE TABLE Promo(
+   Id_Promo SERIAL,
+   nom VARCHAR(50),
+   annee_universitaire VARCHAR(50),
+   identifiant VARCHAR(50) NOT NULL,
+   PRIMARY KEY(Id_Promo),
+   FOREIGN KEY(identifiant) REFERENCES Professeur(identifiant)
 );
 
 CREATE TABLE UE(
