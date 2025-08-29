@@ -1,5 +1,6 @@
 const express = require('express');
 const { pool } = require('../lib/db');
+const crypto = require('crypto');
 
 const router = express.Router();
 
@@ -21,12 +22,13 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ erreur: 'identifiant, nom, prenom, email, adresse, telephone et password sont obligatoires' });
   }
   try {
+    const hashedPassword = crypto.createHash('sha512').update(password).digest('hex');
     const insertQuery = `
       INSERT INTO Utilisateur (identifiant, nom, prenom, email, adresse, telephone, password)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING identifiant, nom, prenom, email, adresse, telephone, password
     `;
-    const values = [identifiant, nom, prenom, email, adresse, telephone, password];
+    const values = [identifiant, nom, prenom, email, adresse, telephone, hashedPassword];
     const result = await pool.query(insertQuery, values);
     res.status(201).json(result.rows[0]);
   } catch (err) {
