@@ -35,16 +35,6 @@ CREATE TABLE Utilisateur(
    FOREIGN KEY(Id_Role) REFERENCES Role(Id_Role)
 );
 
-CREATE TABLE Etudiant(
-   identifiant VARCHAR(50),
-   Id_Filiere INTEGER NOT NULL,
-   Id_Promo INTEGER NOT NULL,
-   PRIMARY KEY(identifiant),
-   FOREIGN KEY(identifiant) REFERENCES Utilisateur(identifiant),
-   FOREIGN KEY(Id_Filiere) REFERENCES Filiere(Id_Filiere),
-   FOREIGN KEY(Id_Promo) REFERENCES Promo(Id_Promo)
-);
-
 CREATE TABLE Professeur(
    identifiant VARCHAR(50),
    PRIMARY KEY(identifiant),
@@ -58,6 +48,16 @@ CREATE TABLE Promo(
    identifiant VARCHAR(50) NOT NULL,
    PRIMARY KEY(Id_Promo),
    FOREIGN KEY(identifiant) REFERENCES Professeur(identifiant)
+);
+
+CREATE TABLE Etudiant(
+   identifiant VARCHAR(50),
+   Id_Filiere INTEGER NOT NULL,
+   Id_Promo INTEGER NOT NULL,
+   PRIMARY KEY(identifiant),
+   FOREIGN KEY(identifiant) REFERENCES Utilisateur(identifiant),
+   FOREIGN KEY(Id_Filiere) REFERENCES Filiere(Id_Filiere),
+   FOREIGN KEY(Id_Promo) REFERENCES Promo(Id_Promo)
 );
 
 CREATE TABLE UE(
