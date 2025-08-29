@@ -308,5 +308,35 @@ VALUES (12.5, 'hnguyen', 'UE101');
 INSERT INTO Note (note, identifiant, code)
 VALUES (10.0, 'adupont', 'UE201');
 -- Doit lever : "L'élève n'étudie pas cette UE, il ne peut pas avoir cette note."
-
 */
+
+
+CREATE OR REPLACE FUNCTION check_enseigne_ue_planning()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM Etudiant e
+		JOIN Correspond c ON e.id_filiere = c.id_filiere 
+        WHERE e.id_promo = NEW.id_promo 
+          AND c.code = NEW.code
+    ) THEN
+        RAISE EXCEPTION 'Il n''y a aucun étudiant étudiant cette UE dans la promotion séléctionnée.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER check_enseigne_ue_planning
+BEFORE INSERT ON Planning
+FOR EACH ROW
+EXECUTE FUNCTION check_enseigne_ue_planning();
+
+
+
+
+
