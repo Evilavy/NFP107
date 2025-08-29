@@ -349,3 +349,39 @@ VALUES ('10:00', '12:00', '2025-09-15', 'jmartin', 2, 'INF101', 2);
 INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
 VALUES ('09:00', '11:00', '2024-10-01', 'mdupont', 1, 'UE101', 1);
 */
+
+CREATE OR REPLACE FUNCTION check_horaire_planning()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM planning
+        WHERE date_ = NEW.date_
+          AND id_salle = NEW.id_salle
+          AND NOT (heure_fin <= NEW.heure_debut OR heure_debut >= NEW.heure_fin)
+    ) THEN
+        RAISE EXCEPTION 'Une salle est déjà réservée sur ce créneau';
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER check_horaire_planning
+BEFORE INSERT ON Planning
+FOR EACH ROW
+EXECUTE FUNCTION check_horaire_planning();
+
+/*
+
+Fonctionne
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
+VALUES ('07:00', '08:00', '2024-09-15', 'mdupont', 1, 'UE101', 1);
+
+Ne fonctionne pas
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
+VALUES ('10:00', '11:00', '2024-09-15', 'jmartin', 1, 'UE102', 1);
+*/
