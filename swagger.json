@@ -5,9 +5,7 @@
     "version": "1.0.0",
     "description": "API pour la gestion des utilisateurs, enseignants et plannings."
   },
-  "servers": [
-    { "url": "http://localhost:3000" }
-  ],
+  "servers": [{ "url": "http://localhost:3000" }],
   "paths": {
     "/Personne/login": {
       "post": {
@@ -37,7 +35,9 @@
                   "type": "object",
                   "properties": {
                     "token": { "type": "string" },
-                    "user": { "$ref": "#/components/schemas/UtilisateurSansPassword" }
+                    "user": {
+                      "$ref": "#/components/schemas/UtilisateurSansPassword"
+                    }
                   }
                 }
               }
@@ -103,7 +103,9 @@
             "description": "Utilisateur courant",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/UtilisateurSansPassword" }
+                "schema": {
+                  "$ref": "#/components/schemas/UtilisateurSansPassword"
+                }
               }
             }
           },
@@ -217,6 +219,7 @@
               }
             }
           },
+<<<<<<< Updated upstream
           "400": { "description": "Données invalides ou références introuvables" },
           "409": { "description": "Conflit de planning (salle déjà occupée)" },
           "500": { "description": "Erreur interne du serveur" }
@@ -248,6 +251,14 @@
           "404": { "description": "Planning introuvable" },
           "500": { "description": "Erreur interne du serveur" }
         }
+=======
+          "400": {
+            "description": "Données invalides ou références introuvables"
+          },
+          "409": { "description": "Conflit de planning (salle déjà occupée)" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+>>>>>>> Stashed changes
       }
     },
     "/planning/{id}": {
@@ -308,7 +319,13 @@
               }
             }
           },
+<<<<<<< Updated upstream
           "400": { "description": "Données invalides ou références introuvables" },
+=======
+          "400": {
+            "description": "Données invalides ou références introuvables"
+          },
+>>>>>>> Stashed changes
           "404": { "description": "Planning introuvable" },
           "409": { "description": "Conflit de planning (salle déjà occupée)" },
           "500": { "description": "Erreur interne du serveur" }
@@ -336,25 +353,7 @@
     }
   },
   "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
-      }
-    },
     "schemas": {
-      "UtilisateurSansPassword": {
-        "type": "object",
-        "properties": {
-          "identifiant": { "type": "string" },
-          "nom": { "type": "string" },
-          "prenom": { "type": "string" },
-          "email": { "type": "string", "format": "email" },
-          "adresse": { "type": "string" },
-          "telephone": { "type": "string" }
-        }
-      },
       "Utilisateur": {
         "type": "object",
         "properties": {
@@ -367,9 +366,28 @@
           "password": { "type": "string" }
         }
       },
+      "UtilisateurSansPassword": {
+        "type": "object",
+        "properties": {
+          "identifiant": { "type": "string" },
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "adresse": { "type": "string" },
+          "telephone": { "type": "string" }
+        }
+      },
       "CreateUtilisateurInput": {
         "type": "object",
-        "required": ["identifiant", "nom", "prenom", "email", "adresse", "telephone", "password"],
+        "required": [
+          "identifiant",
+          "nom",
+          "prenom",
+          "email",
+          "adresse",
+          "telephone",
+          "password"
+        ],
         "properties": {
           "identifiant": { "type": "string" },
           "nom": { "type": "string" },
@@ -408,11 +426,35 @@
       "Planning": {
         "type": "object",
         "properties": {
+<<<<<<< Updated upstream
           "Id_Planning": { "type": "integer", "description": "ID unique du planning" },
           "plage_horaire": { "type": "string", "description": "Plage horaire du cours (ex: 08h00-10h00)" },
           "date_": { "type": "string", "format": "date", "description": "Date du cours" },
           "identifiant": { "type": "string", "description": "Identifiant du professeur" },
           "Id_Promo": { "type": "integer", "description": "ID de la promotion" },
+=======
+          "Id_Planning": {
+            "type": "integer",
+            "description": "ID unique du planning"
+          },
+          "plage_horaire": {
+            "type": "string",
+            "description": "Plage horaire du cours (ex: 08h00-10h00)"
+          },
+          "date_": {
+            "type": "string",
+            "format": "date",
+            "description": "Date du cours"
+          },
+          "identifiant": {
+            "type": "string",
+            "description": "Identifiant du professeur"
+          },
+          "Id_Promo": {
+            "type": "integer",
+            "description": "ID de la promotion"
+          },
+>>>>>>> Stashed changes
           "code": { "type": "string", "description": "Code de l'UE" },
           "Id_Salle": { "type": "integer", "description": "ID de la salle" }
         }
@@ -420,6 +462,7 @@
       "PlanningDetaille": {
         "type": "object",
         "properties": {
+<<<<<<< Updated upstream
           "Id_Planning": { "type": "integer", "description": "ID unique du planning" },
           "plage_horaire": { "type": "string", "description": "Plage horaire du cours" },
           "date_": { "type": "string", "format": "date", "description": "Date du cours" },
@@ -430,12 +473,50 @@
           "promo_nom": { "type": "string", "description": "Nom de la promotion" },
           "ue_code": { "type": "string", "description": "Code de l'UE" },
           "ue_intitule": { "type": "string", "description": "Intitulé de l'UE" },
+=======
+          "Id_Planning": {
+            "type": "integer",
+            "description": "ID unique du planning"
+          },
+          "plage_horaire": {
+            "type": "string",
+            "description": "Plage horaire du cours"
+          },
+          "date_": {
+            "type": "string",
+            "format": "date",
+            "description": "Date du cours"
+          },
+          "prof_identifiant": {
+            "type": "string",
+            "description": "Identifiant du professeur"
+          },
+          "prof_nom": { "type": "string", "description": "Nom du professeur" },
+          "prof_prenom": {
+            "type": "string",
+            "description": "Prénom du professeur"
+          },
+          "Id_Promo": {
+            "type": "integer",
+            "description": "ID de la promotion"
+          },
+          "promo_nom": {
+            "type": "string",
+            "description": "Nom de la promotion"
+          },
+          "ue_code": { "type": "string", "description": "Code de l'UE" },
+          "ue_intitule": {
+            "type": "string",
+            "description": "Intitulé de l'UE"
+          },
+>>>>>>> Stashed changes
           "Id_Salle": { "type": "integer", "description": "ID de la salle" },
           "code_salle": { "type": "string", "description": "Code de la salle" }
         }
       },
       "CreatePlanningInput": {
         "type": "object",
+<<<<<<< Updated upstream
         "required": ["plage_horaire", "date_", "identifiant", "Id_Promo", "code", "Id_Salle"],
         "properties": {
           "plage_horaire": { 
@@ -466,13 +547,60 @@
           },
           "Id_Salle": { 
             "type": "integer", 
+=======
+        "required": [
+          "plage_horaire",
+          "date_",
+          "identifiant",
+          "Id_Promo",
+          "code",
+          "Id_Salle"
+        ],
+        "properties": {
+          "plage_horaire": {
+            "type": "string",
+            "description": "Plage horaire du cours",
+            "example": "08h00-10h00"
+          },
+          "date_": {
+            "type": "string",
+            "format": "date",
+            "description": "Date du cours",
+            "example": "2025-08-29"
+          },
+          "identifiant": {
+            "type": "string",
+            "description": "Identifiant du professeur qui donne le cours",
+            "example": "PROF001"
+          },
+          "Id_Promo": {
+            "type": "integer",
+            "description": "ID de la promotion qui suit le cours",
+            "example": 1
+          },
+          "code": {
+            "type": "string",
+            "description": "Code de l'UE enseignée",
+            "example": "NFP107"
+          },
+          "Id_Salle": {
+            "type": "integer",
+>>>>>>> Stashed changes
             "description": "ID de la salle où se déroule le cours",
             "example": 1
           }
         }
+<<<<<<< Updated upstream
+=======
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+>>>>>>> Stashed changes
       }
     }
   }
 }
-
-

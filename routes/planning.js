@@ -215,6 +215,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+<<<<<<< Updated upstream
 // DELETE /planning - supprimer un planning par ID (body)
 router.delete('/', async (req, res) => {
   const { Id_Planning } = req.body;
@@ -238,4 +239,6 @@ router.delete('/', async (req, res) => {
   }
 });
 
+=======
+>>>>>>> Stashed changes
 module.exports = router;
