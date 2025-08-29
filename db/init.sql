@@ -1,12 +1,8 @@
 -- Activer l'extension pgcrypto
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
-CREATE TABLE Promo(
-   Id_Promo SERIAL,
-   nom VARCHAR(50),
-   annee_universitaire VARCHAR(50),
-   PRIMARY KEY(Id_Promo)
-);
+
+
 
 CREATE TABLE Filiere(
    Id_Filiere SERIAL,
@@ -39,6 +35,21 @@ CREATE TABLE Utilisateur(
    FOREIGN KEY(Id_Role) REFERENCES Role(Id_Role)
 );
 
+CREATE TABLE Professeur(
+   identifiant VARCHAR(50),
+   PRIMARY KEY(identifiant),
+   FOREIGN KEY(identifiant) REFERENCES Utilisateur(identifiant)
+);
+
+CREATE TABLE Promo(
+   Id_Promo SERIAL,
+   nom VARCHAR(50),
+   annee_universitaire VARCHAR(50),
+   identifiant VARCHAR(50) NOT NULL,
+   PRIMARY KEY(Id_Promo),
+   FOREIGN KEY(identifiant) REFERENCES Professeur(identifiant)
+);
+
 CREATE TABLE Etudiant(
    identifiant VARCHAR(50),
    Id_Filiere INTEGER NOT NULL,
@@ -47,12 +58,6 @@ CREATE TABLE Etudiant(
    FOREIGN KEY(identifiant) REFERENCES Utilisateur(identifiant),
    FOREIGN KEY(Id_Filiere) REFERENCES Filiere(Id_Filiere),
    FOREIGN KEY(Id_Promo) REFERENCES Promo(Id_Promo)
-);
-
-CREATE TABLE Professeur(
-   identifiant VARCHAR(50),
-   PRIMARY KEY(identifiant),
-   FOREIGN KEY(identifiant) REFERENCES Utilisateur(identifiant)
 );
 
 CREATE TABLE UE(
@@ -77,7 +82,8 @@ CREATE TABLE Note(
 
 CREATE TABLE Planning(
    Id_Planning SERIAL,
-   plage_horaire VARCHAR(50),
+   heure_debut TIME,
+   heure_fin TIME,
    date_ DATE NOT NULL,
    identifiant VARCHAR(50) NOT NULL,
    Id_Promo INTEGER NOT NULL,
@@ -89,6 +95,7 @@ CREATE TABLE Planning(
    FOREIGN KEY(code) REFERENCES UE(code),
    FOREIGN KEY(Id_Salle) REFERENCES Salle(Id_Salle)
 );
+
 
 CREATE TABLE Enseigne(
    identifiant VARCHAR(50),
@@ -113,10 +120,11 @@ INSERT INTO Role (Id_Role, nom) VALUES
 (3, 'secretaire');
 
 -- ====== PROMOS ======
-INSERT INTO Promo (nom, annee_universitaire) VALUES
-('Promo L3 Info', '2024-2025'),
-('Promo M1 Info', '2024-2025'),
-('Promo M2 Info', '2024-2025');
+-- ====== PROMOS (responsables = professeurs) ======
+INSERT INTO Promo (nom, annee_universitaire, identifiant) VALUES
+('Promo L3 Info', '2024-2025', 'mdupont'),   -- responsable : Marc Dupont
+('Promo M1 Info', '2024-2025', 'jmartin'),   -- responsable : Julie Martin
+('Promo M2 Info', '2024-2025', 'pbernard');  -- responsable : Paul Bernard
 
 -- ====== FILIERES ======
 INSERT INTO Filiere (nom_filiere) VALUES
@@ -199,13 +207,13 @@ INSERT INTO Correspond VALUES
 (3, 'UE201'), (3, 'UE202'), (3, 'UE302');
 
 -- ====== Planning (1 cours par planning) ======
-INSERT INTO Planning (plage_horaire, date_, identifiant, Id_Promo, code, Id_Salle) VALUES
-('08:30-12:00', '2024-09-15', 'mdupont', 1, 'UE101', 1),
-('13:30-17:00', '2024-09-15', 'jmartin', 1, 'UE102', 2),
-('08:30-12:00', '2024-09-16', 'pbernard', 2, 'UE201', 2),
-('13:30-17:00', '2024-09-16', 'mdupont', 2, 'UE202', 3),
-('08:30-12:00', '2024-09-17', 'jmartin', 3, 'UE301', 1),
-('13:30-17:00', '2024-09-17', 'pbernard', 3, 'UE302', 3);
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, Id_Promo, code, Id_Salle) VALUES
+('08:30', '12:00', '2024-09-15', 'mdupont', 1, 'UE101', 1),
+('13:30', '17:00', '2024-09-15', 'jmartin', 1, 'UE102', 2),
+('08:30', '12:00', '2024-09-16', 'pbernard', 2, 'UE201', 2),
+('13:30', '17:00', '2024-09-16', 'mdupont', 2, 'UE202', 3),
+('08:30', '12:00', '2024-09-17', 'jmartin', 3, 'UE301', 1),
+('13:30', '17:00', '2024-09-17', 'pbernard', 3, 'UE302', 3);
 
 -- ====== Notes ======
 INSERT INTO Note (note, identifiant, code) VALUES
@@ -224,4 +232,81 @@ INSERT INTO Note (note, identifiant, code) VALUES
 (13.0, 'mleclerc', 'UE201'),
 (14.0, 'nblanc', 'UE102'),
 (15.0, 'obenoit', 'UE302');
+--Verifie lors de l'insert dans planning que le prof associé enseigne dans l'UE
+CREATE OR REPLACE FUNCTION check_enseigne_ue_planning()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM Enseigne 
+        WHERE identifiant = NEW.identifiant 
+          AND code = NEW.code
+    ) THEN
+        RAISE EXCEPTION 'Ce professeur n''enseigne pas dans cet UE';
+    END IF;
 
+    RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER check_enseigne_ue_planning
+BEFORE INSERT ON Planning
+FOR EACH ROW
+EXECUTE FUNCTION check_enseigne_ue_planning();
+/*
+-- ===== TEST OK : Professeur qui enseigne l'UE =====
+-- mdupont enseigne bien UE101 selon la table Enseigne
+INSERT INTO Planning (plage_horaire, date_, identifiant, Id_Promo, code, Id_Salle)
+VALUES ('08:30-12:00', '2024-09-20', 'mdupont', 1, 'UE101', 1);
+-- Cette insertion doit réussir
+
+-- ===== TEST FAIL : Professeur qui n'enseigne pas l'UE =====
+-- jmartin n'enseigne pas UE201
+INSERT INTO Planning (plage_horaire, date_, identifiant, Id_Promo, code, Id_Salle)
+VALUES ('13:30-17:00', '2024-09-20', 'jmartin', 2, 'UE201', 2);
+-- Cette insertion doit lever l'exception :
+-- "Ce professeur n'enseigne pas dans cet UE"
+*/
+
+-- Vérifie lors de la saisie d'une note que l'élève à bien la filière associée à l'UE de la note
+CREATE OR REPLACE FUNCTION check_note_etudiant_ue()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS
+$$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM Etudiant e 
+		JOIN Correspond c ON e.id_filiere = c.id_filiere
+        WHERE e.identifiant = NEW.identifiant 
+        AND c.code = NEW.code
+    ) THEN
+        RAISE EXCEPTION 'L''élève n''étudie pas cette UE, il ne peut pas avoir cette note.';
+    END IF;
+
+    RETURN NEW;
+END;
+$$;
+
+CREATE OR REPLACE TRIGGER check_note_etudiant_ue
+BEFORE INSERT ON Note
+FOR EACH ROW
+EXECUTE FUNCTION check_note_etudiant_ue();
+
+/*
+-- ===== TEST OK : Autre insertion valide =====
+-- hnguyen est dans la filière 1 et UE101 correspond à filière 1
+INSERT INTO Note (note, identifiant, code)
+VALUES (12.5, 'hnguyen', 'UE101');
+
+-- ===== TEST FAIL : Étudiant non inscrit à l'UE =====
+-- adupont est dans la filière 1, UE201 correspond à filière 3 (Cybersécurité)
+INSERT INTO Note (note, identifiant, code)
+VALUES (10.0, 'adupont', 'UE201');
+-- Cette insertion doit lever l'exception :
+-- "L'élève n'étudie pas cette UE, il ne peut pas avoir cette note."
+*/

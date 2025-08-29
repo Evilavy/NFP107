@@ -7,6 +7,13 @@ require('dotenv').config();
 
 const { pool } = require('./lib/db');
 const personneRouter = require('./routes/personne');
+const ueRouter = require('./routes/ue');
+const enseignantRouter = require('./routes/enseignant');
+const utilisateurRouter = require('./routes/utilisateur');
+const planningRouter = require('./routes/planning');
+const promoRouter = require('./routes/promo');
+const noteRouter = require('./routes/note');
+const filiereRouter = require('./routes/filiere');
 const salleRouter = require('./routes/salle');
 
 const app = express();
@@ -27,6 +34,13 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
 app.use('/Personne', personneRouter);
+app.use('/UE', ueRouter);
+app.use('/Enseignant', enseignantRouter);
+app.use('/Utilisateur', utilisateurRouter);
+app.use('/planning', planningRouter);
+app.use('/Promo', promoRouter);
+app.use('/Note', noteRouter);
+app.use('/Filiere', filiereRouter);
 app.use('/Salle', salleRouter);
 
 // Server
