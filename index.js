@@ -6,6 +6,8 @@ const fs = require('fs');
 require('dotenv').config();
 
 const { pool } = require('./lib/db');
+const personneRouter = require('./routes/personne');
+const enseignantRouter = require('./routes/enseignant');
 const utilisateurRouter = require('./routes/utilisateur');
 
 const app = express();
@@ -25,6 +27,8 @@ const swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
+app.use('/Personne', personneRouter);
+app.use('/Enseignant', enseignantRouter);
 app.use('/Utilisateur', utilisateurRouter);
 
 // Server

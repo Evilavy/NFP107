@@ -364,10 +364,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "erreur": { "type": "string" }
-                  }
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Enseignant" }
                 }
               }
             }
@@ -375,103 +373,67 @@
         }
       }
     },
-    "/Utilisateur": {
-      "delete": {
-        "summary": "Supprimer un utilisateur par identifiant (body)",
-        "description": "Supprime un utilisateur en passant l'identifiant dans le body",
-        "tags": ["Utilisateur"],
+    "/UE": {
+      "get": {
+        "summary": "Lister les UE",
+        "tags": ["UE"],
+        "responses": {
+          "200": {
+            "description": "Liste des UE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UE" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une UE",
+        "tags": ["UE"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "required": ["identifiant"],
-                "properties": {
-                  "identifiant": { 
-                    "type": "string",
-                    "description": "Identifiant de la personne à supprimer"
-                  }
-                }
+                "$ref": "#/components/schemas/CreateUEInput"
               }
             }
           }
         },
         "responses": {
-          "204": { "description": "Personne supprimée avec succès" },
-          "400": { 
-            "description": "Identifiant manquant",
+          "201": {
+            "description": "UE créée",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "erreur": { "type": "string" }
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/UE" }
               }
             }
           },
-          "404": { 
-            "description": "Personne introuvable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "erreur": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "description": "Erreur interne du serveur" }
+          "400": { "description": "Bad request" }
         }
       }
     },
-    "/Utilisateur/{identifiant}": {
+    "/UE/{code}": {
       "delete": {
-        "summary": "Supprimer un utilisateur par identifiant (path)",
-        "description": "Supprime un utilisateur en passant l'identifiant dans l'URL",
-        "tags": ["Utilisateur"],
+        "summary": "Supprimer une UE par code",
+        "tags": ["Personne"],
         "parameters": [
           {
             "in": "path",
-            "name": "identifiant",
+            "name": "code",
             "required": true,
             "schema": { "type": "string" },
-            "description": "Identifiant de la personne à supprimer"
+            "description": "Code de l'UE (clé primaire)"
           }
         ],
         "responses": {
-          "204": { "description": "Personne supprimée avec succès" },
-          "400": { 
-            "description": "Identifiant invalide",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "erreur": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "404": { 
-            "description": "Personne introuvable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "erreur": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "500": { "description": "Erreur interne du serveur" }
+          "204": { "description": "UE supprimée" },
+          "400": { "description": "Code invalide" },
+          "404": { "description": "UE introuvable" }
         }
       }
     }
@@ -578,39 +540,28 @@
           }
         }
       },
-      "CreateUtilisateurInput": {
+      "UE": {
         "type": "object",
-        "required": ["identifiant", "nom", "prenom", "email", "adresse", "telephone", "password"],
         "properties": {
+          "code": { "type": "string" },
+          "intitule": { "type": "string" },
+          "nombre_heure": { "type": "integer" },
+          "nombre_ects": { "type": "integer" },
           "identifiant": { 
-            "type": "string",
-            "description": "Identifiant unique de l'utilisateur"
-          },
-          "nom": { 
-            "type": "string",
-            "description": "Nom de famille"
-          },
-          "prenom": { 
-            "type": "string",
-            "description": "Prénom"
-          },
-          "email": { 
-            "type": "string", 
-            "format": "email",
-            "description": "Adresse email"
-          },
-          "adresse": { 
-            "type": "string",
-            "description": "Adresse postale"
-          },
-          "telephone": { 
-            "type": "string",
-            "description": "Numéro de téléphone"
-          },
-          "password": { 
-            "type": "string",
-            "format": "password",
-            "description": "Mot de passe (sera hashé)"
+            "$ref": "#/components/schemas/Professeur" 
+          }
+        }
+      },
+      "CreateUEInput": {
+        "type": "object",
+        "required": ["code", "intitule", "nombre_heure", "nombre_ects", "identifiant"],
+        "properties": {
+          "code": { "type": "string" },
+          "intitule": { "type": "string" },
+          "nombre_heure": { "type": "integer" },
+          "nombre_ects": { "type": "integer" },
+          "identifiant": { 
+            "$ref": "#/components/schemas/Professeur" 
           }
         }
       }
