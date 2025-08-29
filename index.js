@@ -10,6 +10,7 @@ const personneRouter = require('./routes/personne');
 const ueRouter = require('./routes/ue');
 const enseignantRouter = require('./routes/enseignant');
 const utilisateurRouter = require('./routes/utilisateur');
+const planningRouter = require('./routes/planning');
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use('/Personne', personneRouter);
 app.use('/UE', ueRouter);
 app.use('/Enseignant', enseignantRouter);
 app.use('/Utilisateur', utilisateurRouter);
+app.use('/planning', planningRouter);
 
 // Server
 const PORT = process.env.PORT || 3000;
