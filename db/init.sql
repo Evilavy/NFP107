@@ -73,6 +73,7 @@ CREATE TABLE UE(
 CREATE TABLE Note(
    Id_Note SERIAL,
    note NUMERIC(4,2),
+	date_note DATE,
    identifiant VARCHAR(50) NOT NULL,
    code VARCHAR(50) NOT NULL,
    PRIMARY KEY(Id_Note),
@@ -215,22 +216,22 @@ INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, Id_Promo, code
 ('13:30', '17:00', '2024-09-17', 'pbernard', 3, 'UE302', 3);
 
 -- ====== Notes ======
-INSERT INTO Note (note, identifiant, code) VALUES
-(14.5, 'adupont', 'UE101'),
-(12.0, 'bnguyen', 'UE101'),
-(9.5, 'cgarcia', 'UE102'),
-(15.0, 'dlefevre', 'UE201'),
-(11.0, 'eroux', 'UE202'),
-(13.5, 'fthomas', 'UE301'),
-(16.0, 'ghenry', 'UE302'),
-(8.0, 'hnguyen', 'UE201'),
-(10.5, 'ijoly', 'UE202'),
-(14.0, 'jcaron', 'UE101'),
-(15.5, 'kpetit', 'UE301'),
-(12.5, 'ldurand', 'UE302'),
-(13.0, 'mleclerc', 'UE201'),
-(14.0, 'nblanc', 'UE102'),
-(15.0, 'obenoit', 'UE302');
+INSERT INTO Note (note, identifiant, code, date_note) VALUES
+(14.5, 'adupont', 'UE101', '2024-09-15'),
+(12.0, 'bnguyen', 'UE101', '2024-09-15'),
+(9.5, 'cgarcia', 'UE102', '2024-09-15'),
+(15.0, 'dlefevre', 'UE201', '2024-09-15'),
+(11.0, 'eroux', 'UE202', '2024-09-15'),
+(13.5, 'fthomas', 'UE301', '2024-09-15'),
+(16.0, 'ghenry', 'UE302', '2024-09-15'),
+(8.0, 'hnguyen', 'UE201', '2024-09-15'),
+(10.5, 'ijoly', 'UE202', '2024-09-15'),
+(14.0, 'jcaron', 'UE101','2024-09-15'),
+(15.5, 'kpetit', 'UE301','2024-09-15'),
+(12.5, 'ldurand', 'UE302','2024-09-15'),
+(13.0, 'mleclerc', 'UE201','2024-09-15'),
+(14.0, 'nblanc', 'UE102','2024-09-15'),
+(15.0, 'obenoit', 'UE302','2024-09-15');
 --Verifie lors de l'insert dans planning que le prof associé enseigne dans l'UE
 CREATE OR REPLACE FUNCTION check_enseigne_ue_planning()
 RETURNS TRIGGER
