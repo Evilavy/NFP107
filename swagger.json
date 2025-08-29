@@ -461,7 +461,8 @@
           "400": { "description": "Code invalide" },
           "404": { "description": "UE introuvable" }
         }
-      },
+      }
+    },
     "/Promo": {
       "get": {
         "summary": "Lister les promos",
@@ -734,10 +735,6 @@
           "404": { "description": "Filiere introuvable" }
         }
       }
-    }
-          "409": { "description": "Conflict (email already exists)" }
-        }
-      }
     },
     "/Salle": {
       "get": {
@@ -995,7 +992,8 @@
           "nom": { "type": "string" },
           "annee_universitaire": { "type": "string" }
         }
-      },"Note": {
+      },
+      "Note": {
         "type": "object",
         "properties": {
           "Id_Note": { "type": "string" },
