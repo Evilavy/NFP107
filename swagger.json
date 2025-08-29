@@ -91,31 +91,69 @@
             }
           }
         }
+      }
+    },
+    "/UE": {
+      "get": {
+        "summary": "Lister les UE",
+        "tags": ["UE"],
+        "responses": {
+          "200": {
+            "description": "Liste des UE",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UE" }
+                }
+              }
+            }
+          }
+        }
       },
       "post": {
-        "summary": "Créer un enseignant",
-        "tags": ["Enseignants"],
+        "summary": "Créer une UE",
+        "tags": ["UE"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateEnseignantInput"
+                "$ref": "#/components/schemas/CreateUEInput"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Enseignant créé",
+            "description": "UE créée",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Enseignant" }
+                "schema": { "$ref": "#/components/schemas/UE" }
               }
             }
           },
-          "400": { "description": "Bad request" },
-          "409": { "description": "Conflict (email already exists)" }
+          "400": { "description": "Bad request" }
+        }
+      }
+    },
+    "/UE/{code}": {
+      "delete": {
+        "summary": "Supprimer une UE par code",
+        "tags": ["Personne"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "code",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Code de l'UE (clé primaire)"
+          }
+        ],
+        "responses": {
+          "204": { "description": "UE supprimée" },
+          "400": { "description": "Code invalide" },
+          "404": { "description": "UE introuvable" }
         }
       }
     }
@@ -160,16 +198,29 @@
           "created_at": { "type": "string", "format": "date-time" }
         }
       },
-      "CreateEnseignantInput": {
+      "UE": {
         "type": "object",
-        "required": ["nom", "prenom", "email", "adresse", "telephone", "mdp"],
         "properties": {
-          "nom": { "type": "string" },
-          "prenom": { "type": "string" },
-          "email": { "type": "string", "format": "email" },
-          "adresse": { "type": "string" },
-          "telephone": { "type": "string", "format": "phone_number" },
-          "mdp": { "type": "string", "format": "password" }
+          "code": { "type": "string" },
+          "intitule": { "type": "string" },
+          "nombre_heure": { "type": "integer" },
+          "nombre_ects": { "type": "integer" },
+          "identifiant": { 
+            "$ref": "#/components/schemas/Professeur" 
+          }
+        }
+      },
+      "CreateUEInput": {
+        "type": "object",
+        "required": ["code", "intitule", "nombre_heure", "nombre_ects", "identifiant"],
+        "properties": {
+          "code": { "type": "string" },
+          "intitule": { "type": "string" },
+          "nombre_heure": { "type": "integer" },
+          "nombre_ects": { "type": "integer" },
+          "identifiant": { 
+            "$ref": "#/components/schemas/Professeur" 
+          }
         }
       }
     }
