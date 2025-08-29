@@ -225,3 +225,235 @@ INSERT INTO Note (note, identifiant, code) VALUES
 (14.0, 'nblanc', 'UE102'),
 (15.0, 'obenoit', 'UE302');
 
+
+-- =============================================================
+-- =============== DONNÉES SUPPLÉMENTAIRES MASSIVES ============
+-- =============================================================
+
+-- PROMOS supplémentaires
+INSERT INTO Promo (nom, annee_universitaire) VALUES
+('Promo L1 Info', '2024-2025'),
+('Promo L2 Info', '2024-2025'),
+('Promo L3 Info B', '2024-2025'),
+('Promo M1 Info B', '2024-2025'),
+('Promo M2 Cyber', '2024-2025');
+
+-- FILIÈRES supplémentaires
+INSERT INTO Filiere (nom_filiere) VALUES
+('Data Science'),
+('Réseaux'),
+('Intelligence Artificielle'),
+('Systèmes embarqués'),
+('Robotique');
+
+-- SALLES supplémentaires
+INSERT INTO Salle (code_salle) VALUES
+('D101'), ('D102'), ('D103'), ('D104'), ('D105'),
+('D201'), ('D202'), ('D203'), ('D204'), ('D205');
+
+-- PROFESSEURS supplémentaires (création dans Utilisateur + Professeur)
+INSERT INTO Utilisateur VALUES
+('cperrin', 'Perrin', 'Chloé', 'cperrin@univ.fr', '5 rue de Brest', '0600000005', encode(digest('password', 'sha512'), 'hex'), 2),
+('rmoreau', 'Moreau', 'Romain', 'rmoreau@univ.fr', '6 rue de Metz', '0600000006', encode(digest('password', 'sha512'), 'hex'), 2),
+('tlambert', 'Lambert', 'Théo', 'tlambert@univ.fr', '7 rue de Nice', '0600000007', encode(digest('password', 'sha512'), 'hex'), 2),
+('lfontaine', 'Fontaine', 'Lina', 'lfontaine@univ.fr', '8 rue de Nancy', '0600000008', encode(digest('password', 'sha512'), 'hex'), 2),
+('grousseau', 'Rousseau', 'Gaëtan', 'grousseau@univ.fr', '9 rue de Tours', '0600000009', encode(digest('password', 'sha512'), 'hex'), 2),
+('acarre', 'Carré', 'Aurore', 'acarre@univ.fr', '10 rue de Brest', '0600000016', encode(digest('password', 'sha512'), 'hex'), 2),
+('broy', 'Roy', 'Bastien', 'broy@univ.fr', '11 rue de Nancy', '0600000017', encode(digest('password', 'sha512'), 'hex'), 2),
+('scolas', 'Colas', 'Sara', 'scolas@univ.fr', '12 rue de Rennes', '0600000018', encode(digest('password', 'sha512'), 'hex'), 2),
+('fbaron', 'Baron', 'Florian', 'fbaron@univ.fr', '13 rue de Reims', '0600000019', encode(digest('password', 'sha512'), 'hex'), 2),
+('mmorel', 'Morel', 'Maud', 'mmorel@univ.fr', '14 rue de Caen', '0600000020', encode(digest('password', 'sha512'), 'hex'), 2);
+
+INSERT INTO Professeur VALUES
+('cperrin'), ('rmoreau'), ('tlambert'), ('lfontaine'), ('grousseau'),
+('acarre'), ('broy'), ('scolas'), ('fbaron'), ('mmorel');
+
+-- ÉTUDIANTS supplémentaires (50 étudiants)
+INSERT INTO Utilisateur VALUES
+('s001', 'Arnaud', 'Sophie', 's001@univ.fr', '1 rue AA', '0611000001', encode(digest('password', 'sha512'), 'hex'), 1),
+('s002', 'Bernard', 'Lucas', 's002@univ.fr', '2 rue AB', '0611000002', encode(digest('password', 'sha512'), 'hex'), 1),
+('s003', 'Cohen', 'Léa', 's003@univ.fr', '3 rue AC', '0611000003', encode(digest('password', 'sha512'), 'hex'), 1),
+('s004', 'Dubois', 'Noah', 's004@univ.fr', '4 rue AD', '0611000004', encode(digest('password', 'sha512'), 'hex'), 1),
+('s005', 'Etienne', 'Mila', 's005@univ.fr', '5 rue AE', '0611000005', encode(digest('password', 'sha512'), 'hex'), 1),
+('s006', 'Fabre', 'Jules', 's006@univ.fr', '6 rue AF', '0611000006', encode(digest('password', 'sha512'), 'hex'), 1),
+('s007', 'Garnier', 'Lina', 's007@univ.fr', '7 rue AG', '0611000007', encode(digest('password', 'sha512'), 'hex'), 1),
+('s008', 'Henri', 'Tom', 's008@univ.fr', '8 rue AH', '0611000008', encode(digest('password', 'sha512'), 'hex'), 1),
+('s009', 'Ibrahim', 'Amy', 's009@univ.fr', '9 rue AI', '0611000009', encode(digest('password', 'sha512'), 'hex'), 1),
+('s010', 'Joly', 'Evan', 's010@univ.fr', '10 rue AJ', '0611000010', encode(digest('password', 'sha512'), 'hex'), 1),
+('s011', 'Khaled', 'Nina', 's011@univ.fr', '11 rue AK', '0611000011', encode(digest('password', 'sha512'), 'hex'), 1),
+('s012', 'Leroy', 'Adam', 's012@univ.fr', '12 rue AL', '0611000012', encode(digest('password', 'sha512'), 'hex'), 1),
+('s013', 'Marchand', 'Zoé', 's013@univ.fr', '13 rue AM', '0611000013', encode(digest('password', 'sha512'), 'hex'), 1),
+('s014', 'Nguyen', 'Liam', 's014@univ.fr', '14 rue AN', '0611000014', encode(digest('password', 'sha512'), 'hex'), 1),
+('s015', 'Olivier', 'Emma', 's015@univ.fr', '15 rue AO', '0611000015', encode(digest('password', 'sha512'), 'hex'), 1),
+('s016', 'Petit', 'Nathan', 's016@univ.fr', '16 rue AP', '0611000016', encode(digest('password', 'sha512'), 'hex'), 1),
+('s017', 'Quentin', 'Lola', 's017@univ.fr', '17 rue AQ', '0611000017', encode(digest('password', 'sha512'), 'hex'), 1),
+('s018', 'Robin', 'Timéo', 's018@univ.fr', '18 rue AR', '0611000018', encode(digest('password', 'sha512'), 'hex'), 1),
+('s019', 'Simon', 'Anna', 's019@univ.fr', '19 rue AS', '0611000019', encode(digest('password', 'sha512'), 'hex'), 1),
+('s020', 'Thomas', 'Hugo', 's020@univ.fr', '20 rue AT', '0611000020', encode(digest('password', 'sha512'), 'hex'), 1),
+('s021', 'Urbain', 'Chloé', 's021@univ.fr', '21 rue AU', '0611000021', encode(digest('password', 'sha512'), 'hex'), 1),
+('s022', 'Vidal', 'Gabriel', 's022@univ.fr', '22 rue AV', '0611000022', encode(digest('password', 'sha512'), 'hex'), 1),
+('s023', 'Wagner', 'Camille', 's023@univ.fr', '23 rue AW', '0611000023', encode(digest('password', 'sha512'), 'hex'), 1),
+('s024', 'Xavier', 'Noé', 's024@univ.fr', '24 rue AX', '0611000024', encode(digest('password', 'sha512'), 'hex'), 1),
+('s025', 'Young', 'Eva', 's025@univ.fr', '25 rue AY', '0611000025', encode(digest('password', 'sha512'), 'hex'), 1),
+('s026', 'Zimmer', 'Jade', 's026@univ.fr', '26 rue AZ', '0611000026', encode(digest('password', 'sha512'), 'hex'), 1),
+('s027', 'Albert', 'Sacha', 's027@univ.fr', '27 rue BA', '0611000027', encode(digest('password', 'sha512'), 'hex'), 1),
+('s028', 'Bauer', 'Soline', 's028@univ.fr', '28 rue BB', '0611000028', encode(digest('password', 'sha512'), 'hex'), 1),
+('s029', 'Carlier', 'Noa', 's029@univ.fr', '29 rue BC', '0611000029', encode(digest('password', 'sha512'), 'hex'), 1),
+('s030', 'Delmas', 'Louise', 's030@univ.fr', '30 rue BD', '0611000030', encode(digest('password', 'sha512'), 'hex'), 1),
+('s031', 'Evrard', 'Maël', 's031@univ.fr', '31 rue BE', '0611000031', encode(digest('password', 'sha512'), 'hex'), 1),
+('s032', 'Faure', 'Léane', 's032@univ.fr', '32 rue BF', '0611000032', encode(digest('password', 'sha512'), 'hex'), 1),
+('s033', 'Gerard', 'Rayan', 's033@univ.fr', '33 rue BG', '0611000033', encode(digest('password', 'sha512'), 'hex'), 1),
+('s034', 'Herve', 'Myriam', 's034@univ.fr', '34 rue BH', '0611000034', encode(digest('password', 'sha512'), 'hex'), 1),
+('s035', 'Imbert', 'Noémie', 's035@univ.fr', '35 rue BI', '0611000035', encode(digest('password', 'sha512'), 'hex'), 1),
+('s036', 'Jacquet', 'Ilyes', 's036@univ.fr', '36 rue BJ', '0611000036', encode(digest('password', 'sha512'), 'hex'), 1),
+('s037', 'Klein', 'Alicia', 's037@univ.fr', '37 rue BK', '0611000037', encode(digest('password', 'sha512'), 'hex'), 1),
+('s038', 'Legrand', 'Marin', 's038@univ.fr', '38 rue BL', '0611000038', encode(digest('password', 'sha512'), 'hex'), 1),
+('s039', 'Masson', 'Yanis', 's039@univ.fr', '39 rue BM', '0611000039', encode(digest('password', 'sha512'), 'hex'), 1),
+('s040', 'Navarro', 'Roxane', 's040@univ.fr', '40 rue BN', '0611000040', encode(digest('password', 'sha512'), 'hex'), 1),
+('s041', 'Oury', 'Louna', 's041@univ.fr', '41 rue BO', '0611000041', encode(digest('password', 'sha512'), 'hex'), 1),
+('s042', 'Pires', 'Nolan', 's042@univ.fr', '42 rue BP', '0611000042', encode(digest('password', 'sha512'), 'hex'), 1),
+('s043', 'Quillot', 'Mia', 's043@univ.fr', '43 rue BQ', '0611000043', encode(digest('password', 'sha512'), 'hex'), 1),
+('s044', 'Rault', 'Naël', 's044@univ.fr', '44 rue BR', '0611000044', encode(digest('password', 'sha512'), 'hex'), 1),
+('s045', 'Sauvage', 'Ambre', 's045@univ.fr', '45 rue BS', '0611000045', encode(digest('password', 'sha512'), 'hex'), 1),
+('s046', 'Tanguy', 'Kylian', 's046@univ.fr', '46 rue BT', '0611000046', encode(digest('password', 'sha512'), 'hex'), 1),
+('s047', 'Urbain', 'Mélyna', 's047@univ.fr', '47 rue BU', '0611000047', encode(digest('password', 'sha512'), 'hex'), 1),
+('s048', 'Valentin', 'Lison', 's048@univ.fr', '48 rue BV', '0611000048', encode(digest('password', 'sha512'), 'hex'), 1),
+('s049', 'Wang', 'Elisa', 's049@univ.fr', '49 rue BW', '0611000049', encode(digest('password', 'sha512'), 'hex'), 1),
+('s050', 'Xu', 'Ilan', 's050@univ.fr', '50 rue BX', '0611000050', encode(digest('password', 'sha512'), 'hex'), 1);
+
+-- Association étudiants supplémentaires -> Etudiant
+-- On répartit sur plusieurs filières et promos (en utilisant les IDs existants + nouveaux)
+-- Filières (existantes + nouvelles) ont des Id_Filiere croissants à partir de 1
+-- Promos (existantes + nouvelles) ont des Id_Promo croissants à partir de 1
+INSERT INTO Etudiant VALUES
+('s001', 4, 1), ('s002', 2, 2), ('s003', 1, 3), ('s004', 3, 1), ('s005', 5, 2),
+('s006', 6, 3), ('s007', 7, 4), ('s008', 8, 5), ('s009', 1, 2), ('s010', 2, 1),
+('s011', 3, 3), ('s012', 4, 2), ('s013', 5, 1), ('s014', 6, 2), ('s015', 7, 3),
+('s016', 8, 4), ('s017', 1, 5), ('s018', 2, 3), ('s019', 3, 2), ('s020', 4, 1),
+('s021', 5, 3), ('s022', 6, 1), ('s023', 7, 2), ('s024', 8, 3), ('s025', 1, 4),
+('s026', 2, 5), ('s027', 3, 1), ('s028', 4, 3), ('s029', 5, 2), ('s030', 6, 4),
+('s031', 7, 5), ('s032', 8, 1), ('s033', 1, 2), ('s034', 2, 3), ('s035', 3, 4),
+('s036', 4, 5), ('s037', 5, 1), ('s038', 6, 2), ('s039', 7, 3), ('s040', 8, 4),
+('s041', 1, 5), ('s042', 2, 1), ('s043', 3, 2), ('s044', 4, 3), ('s045', 5, 4),
+('s046', 6, 5), ('s047', 7, 1), ('s048', 8, 2), ('s049', 1, 3), ('s050', 2, 4);
+
+-- UE supplémentaires (nouvelles matières)
+INSERT INTO UE VALUES
+('UE401', 'Programmation Système', 40, 6, 'cperrin'),
+('UE402', 'Réseaux avancés', 45, 6, 'rmoreau'),
+('UE403', 'Deep Learning', 40, 9, 'tlambert'),
+('UE404', 'Vision par ordinateur', 35, 6, 'lfontaine'),
+('UE405', 'Big Data', 40, 6, 'grousseau'),
+('UE406', 'Sécurité Réseaux', 30, 6, 'acarre'),
+('UE407', 'DevOps', 35, 6, 'broy'),
+('UE408', 'Architecture des OS', 45, 6, 'scolas'),
+('UE409', 'Traitement du langage', 40, 9, 'fbaron'),
+('UE410', 'Systèmes embarqués', 40, 6, 'mmorel');
+
+-- Enseignements supplémentaires
+INSERT INTO Enseigne VALUES
+('cperrin', 'UE401'), ('rmoreau', 'UE401'),
+('rmoreau', 'UE402'),
+('tlambert', 'UE403'), ('lfontaine', 'UE404'),
+('grousseau', 'UE405'),
+('acarre', 'UE406'), ('broy', 'UE407'),
+('scolas', 'UE408'), ('fbaron', 'UE409'),
+('mmorel', 'UE410');
+
+-- Planning supplémentaire
+INSERT INTO Planning (plage_horaire, date_, identifiant, Id_Promo, code, Id_Salle) VALUES
+('08:30-12:00', '2024-09-18', 'cperrin', 4, 'UE401', 4),
+('13:30-17:00', '2024-09-18', 'rmoreau', 4, 'UE402', 5),
+('08:30-12:00', '2024-09-19', 'tlambert', 5, 'UE403', 6),
+('13:30-17:00', '2024-09-19', 'lfontaine', 5, 'UE404', 7),
+('08:30-12:00', '2024-09-20', 'grousseau', 6, 'UE405', 8),
+('13:30-17:00', '2024-09-20', 'acarre', 6, 'UE406', 9),
+('08:30-12:00', '2024-09-21', 'broy', 7, 'UE407', 10),
+('13:30-17:00', '2024-09-21', 'scolas', 7, 'UE408', 1),
+('08:30-12:00', '2024-09-22', 'fbaron', 8, 'UE409', 2),
+('13:30-17:00', '2024-09-22', 'mmorel', 8, 'UE410', 3);
+
+-- Notes supplémentaires
+INSERT INTO Note (note, identifiant, code) VALUES
+(12.0, 's001', 'UE401'), (13.5, 's002', 'UE401'), (15.0, 's003', 'UE402'),
+(11.0, 's004', 'UE402'), (16.0, 's005', 'UE403'), (9.5, 's006', 'UE403'),
+(14.0, 's007', 'UE404'), (10.5, 's008', 'UE404'), (13.0, 's009', 'UE405'),
+(15.5, 's010', 'UE405'), (12.5, 's011', 'UE406'), (14.0, 's012', 'UE406'),
+(11.5, 's013', 'UE407'), (16.0, 's014', 'UE407'), (10.0, 's015', 'UE408'),
+(13.5, 's016', 'UE408'), (14.5, 's017', 'UE409'), (12.0, 's018', 'UE409'),
+(15.0, 's019', 'UE410'), (11.0, 's020', 'UE410');
+
+-- Plus d'UE pour étoffer fortement le catalogue
+INSERT INTO UE VALUES
+('UE411', 'Analyse de données', 40, 6, 'cperrin'),
+('UE412', 'Réseaux mobiles', 35, 6, 'rmoreau'),
+('UE413', 'RL et Agents', 40, 9, 'tlambert'),
+('UE414', 'NLP avancé', 40, 9, 'fbaron'),
+('UE415', 'Crypto appliquée', 30, 6, 'acarre'),
+('UE416', 'Conteneurs et Orchestration', 35, 6, 'broy'),
+('UE417', 'Sécurité applicative', 30, 6, 'mmorel'),
+('UE418', 'Calcul distribué', 45, 6, 'grousseau'),
+('UE419', 'Probabilités pour l’IA', 30, 6, 'lfontaine'),
+('UE420', 'Systèmes temps réel', 40, 6, 'mmorel'),
+('UE421', 'Graphes et réseaux', 35, 6, 'rmoreau'),
+('UE422', 'Infra as Code', 35, 6, 'broy'),
+('UE423', 'Sécurité cloud', 30, 6, 'acarre'),
+('UE424', 'Vision 3D', 40, 9, 'lfontaine'),
+('UE425', 'AutoML', 30, 9, 'tlambert'),
+('UE426', 'Bases NoSQL', 35, 6, 'cperrin'),
+('UE427', 'Optimisation', 40, 6, 'grousseau'),
+('UE428', 'Virtualisation', 35, 6, 'scolas'),
+('UE429', 'Sécurité matérielle', 30, 6, 'mmorel'),
+('UE430', 'Edge Computing', 35, 6, 'cperrin');
+
+-- Enseignements associés aux nouvelles UE
+INSERT INTO Enseigne VALUES
+('cperrin', 'UE411'), ('rmoreau', 'UE412'),
+('tlambert', 'UE413'), ('fbaron', 'UE414'),
+('acarre', 'UE415'), ('broy', 'UE416'),
+('mmorel', 'UE417'), ('grousseau', 'UE418'),
+('lfontaine', 'UE419'), ('mmorel', 'UE420'),
+('rmoreau', 'UE421'), ('broy', 'UE422'),
+('acarre', 'UE423'), ('lfontaine', 'UE424'),
+('tlambert', 'UE425'), ('cperrin', 'UE426'),
+('grousseau', 'UE427'), ('scolas', 'UE428'),
+('mmorel', 'UE429'), ('cperrin', 'UE430');
+
+-- Planning enrichi pour les nouvelles UE
+INSERT INTO Planning (plage_horaire, date_, identifiant, Id_Promo, code, Id_Salle) VALUES
+('08:30-12:00', '2024-09-23', 'cperrin', 1, 'UE411', 4),
+('13:30-17:00', '2024-09-23', 'rmoreau', 2, 'UE412', 5),
+('08:30-12:00', '2024-09-24', 'tlambert', 3, 'UE413', 6),
+('13:30-17:00', '2024-09-24', 'fbaron', 4, 'UE414', 7),
+('08:30-12:00', '2024-09-25', 'acarre', 5, 'UE415', 8),
+('13:30-17:00', '2024-09-25', 'broy', 6, 'UE416', 9),
+('08:30-12:00', '2024-09-26', 'mmorel', 7, 'UE417', 10),
+('13:30-17:00', '2024-09-26', 'grousseau', 8, 'UE418', 1),
+('08:30-12:00', '2024-09-27', 'lfontaine', 1, 'UE419', 2),
+('13:30-17:00', '2024-09-27', 'mmorel', 2, 'UE420', 3),
+('08:30-12:00', '2024-09-28', 'rmoreau', 3, 'UE421', 4),
+('13:30-17:00', '2024-09-28', 'broy', 4, 'UE422', 5),
+('08:30-12:00', '2024-09-29', 'acarre', 5, 'UE423', 6),
+('13:30-17:00', '2024-09-29', 'lfontaine', 6, 'UE424', 7),
+('08:30-12:00', '2024-09-30', 'tlambert', 7, 'UE425', 8),
+('13:30-17:00', '2024-09-30', 'cperrin', 8, 'UE426', 9),
+('08:30-12:00', '2024-10-01', 'grousseau', 1, 'UE427', 10),
+('13:30-17:00', '2024-10-01', 'scolas', 2, 'UE428', 1),
+('08:30-12:00', '2024-10-02', 'mmorel', 3, 'UE429', 2),
+('13:30-17:00', '2024-10-02', 'cperrin', 4, 'UE430', 3);
+
+-- Beaucoup plus de notes (répartition sur étudiants s001..s050 et quelques existants)
+INSERT INTO Note (note, identifiant, code) VALUES
+(12.5, 's021', 'UE411'), (14.0, 's022', 'UE411'), (9.0, 's023', 'UE412'), (15.5, 's024', 'UE412'),
+(13.0, 's025', 'UE413'), (11.5, 's026', 'UE413'), (16.0, 's027', 'UE414'), (10.0, 's028', 'UE414'),
+(14.5, 's029', 'UE415'), (12.0, 's030', 'UE415'), (13.5, 's031', 'UE416'), (11.0, 's032', 'UE416'),
+(15.0, 's033', 'UE417'), (10.5, 's034', 'UE417'), (12.0, 's035', 'UE418'), (14.0, 's036', 'UE418'),
+(13.0, 's037', 'UE419'), (15.5, 's038', 'UE419'), (11.5, 's039', 'UE420'), (16.0, 's040', 'UE420'),
+(10.0, 's041', 'UE421'), (13.5, 's042', 'UE421'), (14.0, 's043', 'UE422'), (12.0, 's044', 'UE422'),
+(15.0, 's045', 'UE423'), (11.0, 's046', 'UE423'), (14.5, 's047', 'UE424'), (9.5, 's048', 'UE424'),
+(13.0, 's049', 'UE425'), (12.5, 's050', 'UE425'), (15.5, 's001', 'UE426'), (10.5, 's002', 'UE426'),
+(14.0, 's003', 'UE427'), (12.0, 's004', 'UE427'), (13.5, 's005', 'UE428'), (11.0, 's006', 'UE428'),
+(15.0, 's007', 'UE429'), (10.0, 's008', 'UE429'), (14.5, 's009', 'UE430'), (12.0, 's010', 'UE430'),
+(13.0, 'adupont', 'UE411'), (14.0, 'bnguyen', 'UE412'), (12.5, 'cgarcia', 'UE413'), (15.0, 'dlefevre', 'UE414'),
+(11.5, 'eroux', 'UE415'), (16.0, 'fthomas', 'UE416'), (10.5, 'ghenry', 'UE417'), (14.5, 'hnguyen', 'UE418'),
+(12.0, 'ijoly', 'UE419'), (15.0, 'jcaron', 'UE420');
