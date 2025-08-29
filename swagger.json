@@ -9,10 +9,49 @@
     { "url": "http://localhost:3000" }
   ],
   "paths": {
+    "/Personne/login": {
+      "post": {
+        "summary": "Connexion utilisateur",
+        "tags": ["Personne"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["identifiant", "password"],
+                "properties": {
+                  "identifiant": { "type": "string" },
+                  "password": { "type": "string", "format": "password" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentification réussie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/UtilisateurSansPassword" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Identifiants invalides" }
+        }
+      }
+    },
     "/Personne": {
       "get": {
         "summary": "Lister les personnes",
         "tags": ["Personne"],
+        "security": [{ "bearerAuth": [] }],
         "responses": {
           "200": {
             "description": "Liste des personnes",
@@ -51,6 +90,24 @@
           },
           "400": { "description": "Bad request" },
           "409": { "description": "Conflit (email déjà existant)" }
+        }
+      }
+    },
+    "/Personne/me": {
+      "get": {
+        "summary": "Profil utilisateur courant",
+        "tags": ["Personne"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Utilisateur courant",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UtilisateurSansPassword" }
+              }
+            }
+          },
+          "401": { "description": "Non authentifié" }
         }
       }
     },
@@ -121,7 +178,25 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
     "schemas": {
+      "UtilisateurSansPassword": {
+        "type": "object",
+        "properties": {
+          "identifiant": { "type": "string" },
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "adresse": { "type": "string" },
+          "telephone": { "type": "string" }
+        }
+      },
       "Utilisateur": {
         "type": "object",
         "properties": {
