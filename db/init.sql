@@ -119,12 +119,7 @@ INSERT INTO Role (Id_Role, nom) VALUES
 (2, 'professeur'),
 (3, 'secretaire');
 
--- ====== PROMOS ======
--- ====== PROMOS (responsables = professeurs) ======
-INSERT INTO Promo (nom, annee_universitaire, identifiant) VALUES
-('Promo L3 Info', '2024-2025', 'mdupont'),   -- responsable : Marc Dupont
-('Promo M1 Info', '2024-2025', 'jmartin'),   -- responsable : Julie Martin
-('Promo M2 Info', '2024-2025', 'pbernard');  -- responsable : Paul Bernard
+
 
 -- ====== FILIERES ======
 INSERT INTO Filiere (nom_filiere) VALUES
@@ -150,7 +145,11 @@ INSERT INTO Professeur VALUES
 ('mdupont'),
 ('jmartin'),
 ('pbernard');
-
+-- ====== PROMOS ======
+INSERT INTO Promo (nom, annee_universitaire, identifiant) VALUES
+('Promo L3 Info', '2024-2025', 'mdupont'),   -- responsable : Marc Dupont
+('Promo M1 Info', '2024-2025', 'jmartin'),   -- responsable : Julie Martin
+('Promo M2 Info', '2024-2025', 'pbernard');  -- responsable : Paul Bernard
 -- ====== UTILISATEURS : ETUDIANTS ======
 -- Promo L3 Info
 INSERT INTO Utilisateur VALUES
@@ -257,18 +256,17 @@ BEFORE INSERT ON Planning
 FOR EACH ROW
 EXECUTE FUNCTION check_enseigne_ue_planning();
 /*
--- ===== TEST OK : Professeur qui enseigne l'UE =====
--- mdupont enseigne bien UE101 selon la table Enseigne
-INSERT INTO Planning (plage_horaire, date_, identifiant, Id_Promo, code, Id_Salle)
-VALUES ('08:30-12:00', '2024-09-20', 'mdupont', 1, 'UE101', 1);
--- Cette insertion doit réussir
+-- ===== TEST OK : Professeur qui enseigne bien l'UE =====
+-- mdupont enseigne UE101
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, Id_Promo, code, Id_Salle)
+VALUES ('08:30', '12:00', '2024-09-20', 'mdupont', 1, 'UE101', 1);
 
 -- ===== TEST FAIL : Professeur qui n'enseigne pas l'UE =====
 -- jmartin n'enseigne pas UE201
-INSERT INTO Planning (plage_horaire, date_, identifiant, Id_Promo, code, Id_Salle)
-VALUES ('13:30-17:00', '2024-09-20', 'jmartin', 2, 'UE201', 2);
--- Cette insertion doit lever l'exception :
--- "Ce professeur n'enseigne pas dans cet UE"
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, Id_Promo, code, Id_Salle)
+VALUES ('13:30', '17:00', '2024-09-20', 'jmartin', 2, 'UE201', 2);
+-- Doit lever : "Ce professeur n'enseigne pas dans cet UE"
+
 */
 
 -- Vérifie lors de la saisie d'une note que l'élève à bien la filière associée à l'UE de la note
@@ -298,15 +296,17 @@ FOR EACH ROW
 EXECUTE FUNCTION check_note_etudiant_ue();
 
 /*
--- ===== TEST OK : Autre insertion valide =====
--- hnguyen est dans la filière 1 et UE101 correspond à filière 1
+-- ===== TEST OK : Étudiant inscrit à l'UE =====
+-- hnguyen est dans la filière 1
+-- et UE101 est bien associée à la filière 1
 INSERT INTO Note (note, identifiant, code)
 VALUES (12.5, 'hnguyen', 'UE101');
 
 -- ===== TEST FAIL : Étudiant non inscrit à l'UE =====
--- adupont est dans la filière 1, UE201 correspond à filière 3 (Cybersécurité)
+-- adupont est dans la filière 1
+-- mais UE201 correspond à la filière 3 (Cybersécurité)
 INSERT INTO Note (note, identifiant, code)
 VALUES (10.0, 'adupont', 'UE201');
--- Cette insertion doit lever l'exception :
--- "L'élève n'étudie pas cette UE, il ne peut pas avoir cette note."
+-- Doit lever : "L'élève n'étudie pas cette UE, il ne peut pas avoir cette note."
+
 */
