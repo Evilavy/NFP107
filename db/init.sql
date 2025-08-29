@@ -5,8 +5,11 @@ CREATE TABLE Promo(
    Id_Promo SERIAL,
    nom VARCHAR(50),
    annee_universitaire VARCHAR(50),
-   PRIMARY KEY(Id_Promo)
+   identifiant VARCHAR(50) NOT NULL,
+   PRIMARY KEY(Id_Promo),
+   FOREIGN KEY(identifiant) REFERENCES Professeur(identifiant)
 );
+
 
 CREATE TABLE Filiere(
    Id_Filiere SERIAL,
@@ -115,10 +118,11 @@ INSERT INTO Role (Id_Role, nom) VALUES
 (3, 'secretaire');
 
 -- ====== PROMOS ======
-INSERT INTO Promo (nom, annee_universitaire) VALUES
-('Promo L3 Info', '2024-2025'),
-('Promo M1 Info', '2024-2025'),
-('Promo M2 Info', '2024-2025');
+-- ====== PROMOS (responsables = professeurs) ======
+INSERT INTO Promo (nom, annee_universitaire, identifiant) VALUES
+('Promo L3 Info', '2024-2025', 'mdupont'),   -- responsable : Marc Dupont
+('Promo M1 Info', '2024-2025', 'jmartin'),   -- responsable : Julie Martin
+('Promo M2 Info', '2024-2025', 'pbernard');  -- responsable : Paul Bernard
 
 -- ====== FILIERES ======
 INSERT INTO Filiere (nom_filiere) VALUES

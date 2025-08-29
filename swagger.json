@@ -415,6 +415,32 @@
           },
           "400": { "description": "Bad request" }
         }
+      },
+      "put": {
+        "summary": "Modifier une UE",
+        "tags": ["UE"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUEInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "UE modifiée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UE" }
+              }
+            }
+          },
+          "400": { "description": "Code d'UE invalide" },
+          "404": { "description": "UE introuvable" }
+        }
       }
     },
     "/UE/{code}": {
@@ -539,7 +565,7 @@
       }
     },
     "schemas": {
-      "UtilisateurSansPassword": {
+      "Utilisateur": {
         "type": "object",
         "properties": {
           "identifiant": { 
@@ -644,6 +670,18 @@
         }
       },
       "CreateUEInput": {
+        "type": "object",
+        "required": ["intitule", "nombre_heure", "nombre_ects", "identifiant"],
+        "properties": {
+          "intitule": { "type": "string" },
+          "nombre_heure": { "type": "integer" },
+          "nombre_ects": { "type": "integer" },
+          "identifiant": { 
+            "$ref": "#/components/schemas/Professeur" 
+          }
+        }
+      },
+      "UpdateUEInput": {
         "type": "object",
         "required": ["code", "intitule", "nombre_heure", "nombre_ects", "identifiant"],
         "properties": {
