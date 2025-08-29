@@ -1,17 +1,11 @@
 const express = require('express');
 const { pool } = require('../lib/db');
-const crypto = require('crypto');
-const { signUserToken, authenticateBearer } = require('../lib/auth');
 
 const router = express.Router();
 
 // GET /Salle - récupérer toutes les salles
-router.get('/', authenticateBearer, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const { Id_Salle } = req.user || {};
-    if (!Id_Salle) {
-      return res.status(401).json({ erreur: 'Token invalide' });
-    }
     const result = await pool.query('SELECT Id_Salle, code_salle FROM Salle ORDER BY Id_Salle ASC');
     res.json(result.rows);
   } catch (err) {
