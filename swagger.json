@@ -118,6 +118,97 @@
           "409": { "description": "Conflict (email already exists)" }
         }
       }
+    },
+    "/Note": {
+      "get": {
+        "summary": "Lister les notes",
+        "tags": ["Note"],
+        "responses": {
+          "200": {
+            "description": "Liste des notes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Note" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une note",
+        "tags": ["Note"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNoteInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Note créée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Note" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflit (note déjà existante)" }
+        }
+      },
+      "put": {
+        "summary": "Modifier une note",
+        "tags": ["Note"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNoteInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Note modifiée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Note" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflit" }
+        }
+      }
+    },
+    "/Note/{Id_Note}": {
+      "delete": {
+        "summary": "Supprimer une note par Id_Note",
+        "tags": ["Note"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Id_Note",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Id_Note de la note (clé primaire)"
+          }
+        ],
+        "responses": {
+          "204": { "description": "Note supprimée" },
+          "400": { "description": "Id_Note invalide" },
+          "404": { "description": "Note introuvable" }
+        }
+      }
     }
   },
   "components": {
@@ -170,6 +261,45 @@
           "adresse": { "type": "string" },
           "telephone": { "type": "string", "format": "phone_number" },
           "mdp": { "type": "string", "format": "password" }
+        }
+      },"Note": {
+        "type": "object",
+        "properties": {
+          "Id_Note": { "type": "string" },
+          "note": { "type": "float" },
+          "identifiant": {
+            "$ref": "#/components/schemas/Etudiant" 
+          },
+          "code": {
+            "$ref": "#/components/schemas/UE" 
+          }
+        }
+      },
+      "CreateNoteInput": {
+        "type": "object",
+        "required": ["note"],
+        "properties": {
+          "note": { "type": "float" },
+          "identifiant": {
+            "$ref": "#/components/schemas/Etudiant" 
+          },
+          "code": {
+            "$ref": "#/components/schemas/UE" 
+          }
+        }
+      },
+      "UpdateNoteInput": {
+        "type": "object",
+        "required": ["Id_Note", "note"],
+        "properties": {
+          "Id_Note": { "type": "string" },
+          "note": { "type": "float" },
+          "identifiant": {
+            "$ref": "#/components/schemas/Etudiant" 
+          },
+          "code": {
+            "$ref": "#/components/schemas/UE" 
+          }
         }
       }
     }
