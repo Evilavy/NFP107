@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE TABLE Promo(
    Id_Promo SERIAL,
    nom VARCHAR(50),
@@ -133,13 +135,13 @@ INSERT INTO Salle (code_salle) VALUES
 
 -- ====== UTILISATEURS : SECRETAIRE ======
 INSERT INTO Utilisateur VALUES
-('sdupond', 'Dupond', 'Sophie', 'sdupond@univ.fr', '1 rue de Paris', '0600000001', 'hashpwd1', 3);
+('sdupond', 'Dupond', 'Sophie', 'sdupond@univ.fr', '1 rue de Paris', '0600000001', encode(digest('password', 'sha512'), 'hex'), 3);
 
 -- ====== UTILISATEURS : PROFESSEURS ======
 INSERT INTO Utilisateur VALUES
-('mdupont', 'Dupont', 'Marc', 'mdupont@univ.fr', '2 rue de Lyon', '0600000002', 'hashpwd2', 2),
-('jmartin', 'Martin', 'Julie', 'jmartin@univ.fr', '3 rue de Nantes', '0600000003', 'hashpwd3', 2),
-('pbernard', 'Bernard', 'Paul', 'pbernard@univ.fr', '4 rue de Lille', '0600000004', 'hashpwd4', 2);
+('mdupont', 'Dupont', 'Marc', 'mdupont@univ.fr', '2 rue de Lyon', '0600000002', encode(digest('password', 'sha512'), 'hex'), 2),
+('jmartin', 'Martin', 'Julie', 'jmartin@univ.fr', '3 rue de Nantes', '0600000003', encode(digest('password', 'sha512'), 'hex'), 2),
+('pbernard', 'Bernard', 'Paul', 'pbernard@univ.fr', '4 rue de Lille', '0600000004', encode(digest('password', 'sha512'), 'hex'), 2);
 
 INSERT INTO Professeur VALUES
 ('mdupont'),
@@ -149,27 +151,27 @@ INSERT INTO Professeur VALUES
 -- ====== UTILISATEURS : ETUDIANTS ======
 -- Promo L3 Info
 INSERT INTO Utilisateur VALUES
-('adupont', 'Dupont', 'Alice', 'adupont@univ.fr', '10 rue A', '0610000001', 'hashpwd5', 1),
-('bnguyen', 'Nguyen', 'Bao', 'bnguyen@univ.fr', '11 rue B', '0610000002', 'hashpwd6', 1),
-('cgarcia', 'Garcia', 'Clara', 'cgarcia@univ.fr', '12 rue C', '0610000003', 'hashpwd7', 1),
-('dlefevre', 'Lefevre', 'David', 'dlefevre@univ.fr', '13 rue D', '0610000004', 'hashpwd8', 1),
-('eroux', 'Roux', 'Emma', 'eroux@univ.fr', '14 rue E', '0610000005', 'hashpwd9', 1);
+('adupont', 'Dupont', 'Alice', 'adupont@univ.fr', '10 rue A', '0610000001', encode(digest('password', 'sha512'), 'hex'), 1),
+('bnguyen', 'Nguyen', 'Bao', 'bnguyen@univ.fr', '11 rue B', '0610000002', encode(digest('password', 'sha512'), 'hex'), 1),
+('cgarcia', 'Garcia', 'Clara', 'cgarcia@univ.fr', '12 rue C', '0610000003', encode(digest('password', 'sha512'), 'hex'), 1),
+('dlefevre', 'Lefevre', 'David', 'dlefevre@univ.fr', '13 rue D', '0610000004', encode(digest('password', 'sha512'), 'hex'), 1),
+('eroux', 'Roux', 'Emma', 'eroux@univ.fr', '14 rue E', '0610000005', encode(digest('password', 'sha512'), 'hex'), 1);
 
 -- Promo M1 Info
 INSERT INTO Utilisateur VALUES
-('fthomas', 'Thomas', 'François', 'fthomas@univ.fr', '15 rue F', '0610000006', 'hashpwd10', 1),
-('ghenry', 'Henry', 'Gaëlle', 'ghenry@univ.fr', '16 rue G', '0610000007', 'hashpwd11', 1),
-('hnguyen', 'Nguyen', 'Hugo', 'hnguyen@univ.fr', '17 rue H', '0610000008', 'hashpwd12', 1),
-('ijoly', 'Joly', 'Inès', 'ijoly@univ.fr', '18 rue I', '0610000009', 'hashpwd13', 1),
-('jcaron', 'Caron', 'Julien', 'jcaron@univ.fr', '19 rue J', '0610000010', 'hashpwd14', 1);
+('fthomas', 'Thomas', 'François', 'fthomas@univ.fr', '15 rue F', '0610000006', encode(digest('password', 'sha512'), 'hex'), 1),
+('ghenry', 'Henry', 'Gaëlle', 'ghenry@univ.fr', '16 rue G', '0610000007', encode(digest('password', 'sha512'), 'hex'), 1),
+('hnguyen', 'Nguyen', 'Hugo', 'hnguyen@univ.fr', '17 rue H', '0610000008', encode(digest('password', 'sha512'), 'hex'), 1),
+('ijoly', 'Joly', 'Inès', 'ijoly@univ.fr', '18 rue I', '0610000009', encode(digest('password', 'sha512'), 'hex'), 1),
+('jcaron', 'Caron', 'Julien', 'jcaron@univ.fr', '19 rue J', '0610000010', encode(digest('password', 'sha512'), 'hex'), 1);
 
 -- Promo M2 Info
 INSERT INTO Utilisateur VALUES
-('kpetit', 'Petit', 'Karim', 'kpetit@univ.fr', '20 rue K', '0610000011', 'hashpwd15', 1),
-('ldurand', 'Durand', 'Laura', 'ldurand@univ.fr', '21 rue L', '0610000012', 'hashpwd16', 1),
-('mleclerc', 'Leclerc', 'Mathis', 'mleclerc@univ.fr', '22 rue M', '0610000013', 'hashpwd17', 1),
-('nblanc', 'Blanc', 'Nina', 'nblanc@univ.fr', '23 rue N', '0610000014', 'hashpwd18', 1),
-('obenoit', 'Benoit', 'Olivier', 'obenoit@univ.fr', '24 rue O', '0610000015', 'hashpwd19', 1);
+('kpetit', 'Petit', 'Karim', 'kpetit@univ.fr', '20 rue K', '0610000011', encode(digest('password', 'sha512'), 'hex'), 1),
+('ldurand', 'Durand', 'Laura', 'ldurand@univ.fr', '21 rue L', '0610000012', encode(digest('password', 'sha512'), 'hex'), 1),
+('mleclerc', 'Leclerc', 'Mathis', 'mleclerc@univ.fr', '22 rue M', '0610000013', encode(digest('password', 'sha512'), 'hex'), 1),
+('nblanc', 'Blanc', 'Nina', 'nblanc@univ.fr', '23 rue N', '0610000014', encode(digest('password', 'sha512'), 'hex'), 1),
+('obenoit', 'Benoit', 'Olivier', 'obenoit@univ.fr', '24 rue O', '0610000015', encode(digest('password', 'sha512'), 'hex'), 1);
 
 -- Association étudiants -> Etudiant (avec Filiere et Promo)
 INSERT INTO Etudiant VALUES
