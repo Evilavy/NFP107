@@ -6,8 +6,12 @@ const { signUserToken, authenticateBearer } = require('../lib/auth');
 const router = express.Router();
 
 // GET /Personne - récupérer toutes les personnes
-router.get('/', async (req, res) => {
+router.get('/', authenticateBearer, async (req, res) => {
   try {
+    const { identifiant } = req.user || {};
+    if (!identifiant) {
+      return res.status(401).json({ erreur: 'Token invalide' });
+    }
     const result = await pool.query('SELECT identifiant, nom, prenom, email, adresse, telephone FROM Utilisateur ORDER BY identifiant ASC');
     res.json(result.rows);
   } catch (err) {
