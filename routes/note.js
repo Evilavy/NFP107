@@ -29,6 +29,10 @@ router.post('/', async (req, res) => {
     const values = [note, identifiant, code];
     const result = await pool.query(insertQuery, values);
     res.status(201).json(result.rows[0]);
+
+    // Quand une nouvelle note est disponible, l'étudiant concerné est notifié (via mail) 
+    
+    // le lendemain à 8h (afin de laisser le temps à l'enseignant de modifier la note en cas d'erreur de saisie)
   } catch (err) {
     console.error('POST /Note erreur :', err);
     if (err.code === '23505') { // violation de contrainte unique
