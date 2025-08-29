@@ -6,7 +6,7 @@ const fs = require('fs');
 require('dotenv').config();
 
 const { pool } = require('./lib/db');
-const usersRouter = require('./routes/users');
+const personneRouter = require('./routes/personne');
 
 const app = express();
 
@@ -25,7 +25,7 @@ const swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
-app.use('/Personne', usersRouter);
+app.use('/Personne', personneRouter);
 
 // Server
 const PORT = process.env.PORT || 3000;

@@ -20,7 +20,7 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Personne" }
+                  "items": { "$ref": "#/components/schemas/Utilisateur" }
                 }
               }
             }
@@ -35,7 +35,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreatePersonneInput"
+                "$ref": "#/components/schemas/CreateUtilisateurInput"
               }
             }
           }
@@ -45,7 +45,7 @@
             "description": "Personne créée",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Personne" }
+                "schema": { "$ref": "#/components/schemas/Utilisateur" }
               }
             }
           },
@@ -54,22 +54,22 @@
         }
       }
     },
-    "/Personne/{id}": {
+    "/Personne/{identifiant}": {
       "delete": {
-        "summary": "Supprimer une personne par id",
+        "summary": "Supprimer une personne par identifiant",
         "tags": ["Personne"],
         "parameters": [
           {
             "in": "path",
-            "name": "id",
+            "name": "identifiant",
             "required": true,
-            "schema": { "type": "integer", "minimum": 1 },
-            "description": "Identifiant de la personne"
+            "schema": { "type": "string" },
+            "description": "Identifiant de la personne (clé primaire)"
           }
         ],
         "responses": {
           "204": { "description": "Personne supprimée" },
-          "400": { "description": "Invalid id supplied" },
+          "400": { "description": "Identifiant invalide" },
           "404": { "description": "Personne introuvable" }
         }
       }
@@ -122,29 +122,29 @@
   },
   "components": {
     "schemas": {
-      "Personne": {
+      "Utilisateur": {
         "type": "object",
         "properties": {
-          "id": { "type": "integer" },
+          "identifiant": { "type": "string" },
           "nom": { "type": "string" },
           "prenom": { "type": "string" },
           "email": { "type": "string", "format": "email" },
-          "telephone": { "type": "integer" },
-          "identifiant": { "type": "string" },
-          "mdp": { "type": "string" },
-          "created_at": { "type": "string", "format": "date-time" }
+          "adresse": { "type": "string" },
+          "telephone": { "type": "string" },
+          "password": { "type": "string" }
         }
       },
-      "CreatePersonneInput": {
+      "CreateUtilisateurInput": {
         "type": "object",
-        "required": ["nom", "prenom", "email", "telephone", "identifiant", "mdp"],
+        "required": ["identifiant", "nom", "prenom", "email", "adresse", "telephone", "password"],
         "properties": {
+          "identifiant": { "type": "string" },
           "nom": { "type": "string" },
           "prenom": { "type": "string" },
           "email": { "type": "string", "format": "email" },
-          "telephone": { "type": "integer" },
-          "identifiant": { "type": "string" },
-          "mdp": { "type": "string" }
+          "adresse": { "type": "string" },
+          "telephone": { "type": "string" },
+          "password": { "type": "string" }
         }
       },
       "Enseignant": {
