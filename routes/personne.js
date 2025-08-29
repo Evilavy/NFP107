@@ -86,5 +86,3 @@ router.delete('/:identifiant', async (req, res) => {
 });
 
 module.exports = router;
-
-
