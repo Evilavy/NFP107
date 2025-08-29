@@ -25,8 +25,8 @@ services:
       db:
         condition: service_healthy
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@nfp107.com
-      PGADMIN_DEFAULT_PASSWORD: evilavy
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
     ports:
       - "8080:80"
     volumes:
