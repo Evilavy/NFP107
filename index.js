@@ -25,7 +25,7 @@ const swaggerDocument = JSON.parse(fs.readFileSync(swaggerPath, 'utf8'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
-app.use('/users', usersRouter);
+app.use('/Personne', usersRouter);
 
 // Server
 const PORT = process.env.PORT || 3000;
@@ -33,15 +33,15 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   const apiUrl = `http://localhost:${PORT}`;
   const swaggerUrl = `${apiUrl}/api-docs`;
-  console.log(`[api] Listening on ${apiUrl}`);
-  console.log(`[api] Swagger UI available at ${swaggerUrl}`);
+  console.log(`[api] Écoute sur ${apiUrl}`);
+  console.log(`[api] Swagger UI disponible sur ${swaggerUrl}`);
 
   // Try a simple DB ping
   try {
     const { rows } = await pool.query('SELECT NOW() AS now');
-    console.log(`[db] Connected. Server time: ${rows[0].now}`);
+    console.log(`[db] Connecté. Heure du serveur: ${rows[0].now}`);
   } catch (err) {
-    console.error('[db] Connection failed:', err.message);
+    console.error('[db] Échec de la connexion :', err.message);
   }
 });
 

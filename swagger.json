@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "NFP107 Users API",
+    "title": "NFP107 Personne API",
     "version": "1.0.0",
     "description": "Simple API to manage users."
   },
@@ -9,18 +9,18 @@
     { "url": "http://localhost:3000" }
   ],
   "paths": {
-    "/users": {
+    "/Personne": {
       "get": {
-        "summary": "List users",
-        "tags": ["Users"],
+        "summary": "Lister les personnes",
+        "tags": ["Personne"],
         "responses": {
           "200": {
-            "description": "A list of users",
+            "description": "Liste des personnes",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/User" }
+                  "items": { "$ref": "#/components/schemas/Personne" }
                 }
               }
             }
@@ -28,29 +28,49 @@
         }
       },
       "post": {
-        "summary": "Create a user",
-        "tags": ["Users"],
+        "summary": "Créer une personne",
+        "tags": ["Personne"],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateUserInput"
+                "$ref": "#/components/schemas/CreatePersonneInput"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Created user",
+            "description": "Personne créée",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/User" }
+                "schema": { "$ref": "#/components/schemas/Personne" }
               }
             }
           },
           "400": { "description": "Bad request" },
-          "409": { "description": "Conflict (email already exists)" }
+          "409": { "description": "Conflit (email déjà existant)" }
+        }
+      }
+    },
+    "/Personne/{id}": {
+      "delete": {
+        "summary": "Supprimer une personne par id",
+        "tags": ["Personne"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "integer", "minimum": 1 },
+            "description": "Identifiant de la personne"
+          }
+        ],
+        "responses": {
+          "204": { "description": "Personne supprimée" },
+          "400": { "description": "Invalid id supplied" },
+          "404": { "description": "Personne introuvable" }
         }
       }
     },
@@ -102,21 +122,29 @@
   },
   "components": {
     "schemas": {
-      "User": {
+      "Personne": {
         "type": "object",
         "properties": {
           "id": { "type": "integer" },
-          "name": { "type": "string" },
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
           "email": { "type": "string", "format": "email" },
+          "telephone": { "type": "integer" },
+          "identifiant": { "type": "string" },
+          "mdp": { "type": "string" },
           "created_at": { "type": "string", "format": "date-time" }
         }
       },
-      "CreateUserInput": {
+      "CreatePersonneInput": {
         "type": "object",
-        "required": ["name", "email"],
+        "required": ["nom", "prenom", "email", "telephone", "identifiant", "mdp"],
         "properties": {
-          "name": { "type": "string" },
-          "email": { "type": "string", "format": "email" }
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "telephone": { "type": "integer" },
+          "identifiant": { "type": "string" },
+          "mdp": { "type": "string" }
         }
       },
       "Enseignant": {
