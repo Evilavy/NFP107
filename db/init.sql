@@ -364,8 +364,18 @@ BEGIN
           AND id_salle = NEW.id_salle
           AND NOT (heure_fin <= NEW.heure_debut OR heure_debut >= NEW.heure_fin)
     ) THEN
-        RAISE EXCEPTION 'Une salle est déjà réservée sur ce créneau';
+        RAISE EXCEPTION 'La salle est déjà réservée sur ce créneau';
     END IF;
+	IF EXISTS (
+        SELECT 1
+        FROM planning
+        WHERE date_ = NEW.date_
+          AND identifiant = NEW.identifiant
+          AND NOT (heure_fin <= NEW.heure_debut OR heure_debut >= NEW.heure_fin)
+    ) THEN
+        RAISE EXCEPTION 'Le prof est déjà réservée sur ce créneau';
+    END IF;
+	
 
     RETURN NEW;
 END;
@@ -376,15 +386,27 @@ BEFORE INSERT ON Planning
 FOR EACH ROW
 EXECUTE FUNCTION check_horaire_planning();
 
+
 /*
 
-Fonctionne
+Fonctionne - salle
 INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
 VALUES ('07:00', '08:00', '2024-09-15', 'mdupont', 1, 'UE101', 1);
 
-Ne fonctionne pas
+Ne fonctionne pas - salle
 INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
 VALUES ('10:00', '11:00', '2024-09-15', 'jmartin', 1, 'UE102', 1);
+
+-- 1️⃣ Créneau valide : prof non occupé
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
+VALUES ('07:00', '08:00', '2024-09-15', 'mdupont', 1, 'UE101', 2);
+-- ✅ Devrait passer (prof mdupont libre sur ce créneau)
+
+-- 2️⃣ Créneau qui chevauche un cours existant de mdupont (08:30-12:00, salle 1)
+INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
+VALUES ('09:00', '10:00', '2024-09-15', 'mdupont', 2, 'UE102', 3);
+-- ❌ Devrait lever l'exception "Le prof est déjà réservée sur ce créneau"
+
 */
 
 CREATE OR REPLACE FUNCTION verifier_ects()
