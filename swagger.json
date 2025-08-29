@@ -9,6 +9,109 @@
     { "url": "http://localhost:3000" }
   ],
   "paths": {
+    "/planning": {
+      "get": {
+        "summary": "Lister les plannings",
+        "tags": ["Planning"],
+        "responses": {
+          "200": {
+            "description": "Liste des plannings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Planning" }
+                }
+              }
+            }
+          },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      },
+      "post": {
+        "summary": "Créer un planning",
+        "tags": ["Planning"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePlanningInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Planning créé",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Planning" }
+              }
+            }
+          },
+          "400": { "description": "Données manquantes ou invalides" },
+          "409": { "description": "Conflit de planning (salle déjà occupée)" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      }
+    },
+    "/planning/{id}": {
+      "get": {
+        "summary": "Récupérer un planning par ID",
+        "tags": ["Planning"],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Planning",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Planning" } }
+            }
+          },
+          "400": { "description": "ID du planning invalide" },
+          "404": { "description": "Planning introuvable" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      },
+      "put": {
+        "summary": "Modifier un planning",
+        "tags": ["Planning"],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/UpdatePlanningInput" } }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Planning modifié",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Planning" } }
+            }
+          },
+          "400": { "description": "Données invalides ou références invalides" },
+          "409": { "description": "Conflit de planning (salle déjà occupée)" },
+          "404": { "description": "Planning introuvable" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      },
+      "delete": {
+        "summary": "Supprimer un planning",
+        "tags": ["Planning"],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "integer" } }
+        ],
+        "responses": {
+          "204": { "description": "Planning supprimé" },
+          "400": { "description": "ID du planning invalide" },
+          "404": { "description": "Planning introuvable" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      }
+    },
     "/Utilisateur/login": {
       "post": {
         "summary": "Connexion utilisateur",
@@ -839,6 +942,60 @@
       }
     },
     "schemas": {
+      "Planning": {
+        "type": "object",
+        "properties": {
+          "Id_Planning": { "type": "integer" },
+          "plage_horaire": { "type": "string" },
+          "date_": { "type": "string", "format": "date" },
+          "identifiant": { "type": "string", "description": "Identifiant du professeur" },
+          "Id_Promo": { "type": "integer" },
+          "code": { "type": "string", "description": "Code de l'UE" },
+          "Id_Salle": { "type": "integer" }
+        }
+      },
+      "CreatePlanningInput": {
+        "type": "object",
+        "required": ["plage_horaire", "date_", "identifiant", "Id_Promo", "code", "Id_Salle"],
+        "properties": {
+          "plage_horaire": { "type": "string", "example": "08:30-12:00" },
+          "date_": { "type": "string", "format": "date", "example": "2024-09-15" },
+          "identifiant": { "type": "string", "example": "mdupont" },
+          "Id_Promo": { "type": "integer", "example": 1 },
+          "code": { "type": "string", "example": "UE101" },
+          "Id_Salle": { "type": "integer", "example": 2 }
+        }
+      },
+      "UpdatePlanningInput": {
+        "type": "object",
+        "required": ["plage_horaire", "date_", "identifiant", "Id_Promo", "code", "Id_Salle"],
+        "properties": {
+          "plage_horaire": { "type": "string" },
+          "date_": { "type": "string", "format": "date" },
+          "identifiant": { "type": "string" },
+          "Id_Promo": { "type": "integer" },
+          "code": { "type": "string" },
+          "Id_Salle": { "type": "integer" }
+        }
+      },
+      "UtilisateurSansPassword": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Utilisateur" }
+        ]
+      },
+      "CreateUtilisateurInput": {
+        "type": "object",
+        "required": ["identifiant", "nom", "prenom", "email", "adresse", "telephone", "password"],
+        "properties": {
+          "identifiant": { "type": "string", "description": "Identifiant unique de l'utilisateur" },
+          "nom": { "type": "string", "description": "Nom de famille" },
+          "prenom": { "type": "string", "description": "Prénom" },
+          "email": { "type": "string", "format": "email", "description": "Adresse email" },
+          "adresse": { "type": "string", "description": "Adresse postale" },
+          "telephone": { "type": "string", "description": "Numéro de téléphone" },
+          "password": { "type": "string", "format": "password", "description": "Mot de passe (sera hashé)" }
+        }
+      },
       "Utilisateur": {
         "type": "object",
         "properties": {
