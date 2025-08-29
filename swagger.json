@@ -3,7 +3,15 @@
   "info": {
     "title": "NFP107 API - Gestion des Utilisateurs avec Rôles",
     "version": "1.0.0",
-    "description": "API pour gérer les utilisateurs avec système de rôles (étudiant, professeur, secrétaire)"
+    "description": "API pour gérer les utilisateurs avec système de rôles (étudiant, professeur, secrétaire).\n\n## Rôles et Permissions\n\n- **Étudiant** : Accès en lecture aux informations de base\n- **Professeur** : Accès étendu aux données pédagogiques\n- **Secrétaire** : Accès complet, seule la secrétaire peut créer de nouveaux comptes utilisateurs\n\n## Authentification\n\nTous les endpoints (sauf `/login`) nécessitent un token JWT obtenu via l'endpoint de connexion.",
+    "contact": {
+      "name": "Support API",
+      "email": "support@nfp107.fr"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
   },
   "servers": [
     { "url": "http://localhost:3000" }
@@ -24,13 +32,19 @@
                 "properties": {
                   "identifiant": { 
                     "type": "string",
-                    "description": "Identifiant de l'utilisateur"
+                    "description": "Identifiant de l'utilisateur",
+                    "example": "adupont"
                   },
                   "password": { 
                     "type": "string", 
                     "format": "password",
-                    "description": "Mot de passe de l'utilisateur"
+                    "description": "Mot de passe de l'utilisateur",
+                    "example": "password"
                   }
+                },
+                "example": {
+                  "identifiant": "adupont",
+                  "password": "password"
                 }
               }
             }
@@ -87,7 +101,7 @@
     "/Utilisateur": {
       "get": {
         "summary": "Lister tous les utilisateurs",
-        "description": "Récupère la liste de tous les utilisateurs (authentification requise)",
+        "description": "Récupère la liste de tous les utilisateurs. **Accès :** Tous les utilisateurs authentifiés",
         "tags": ["Utilisateur"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
@@ -110,7 +124,7 @@
     "/Utilisateur/create": {
       "post": {
         "summary": "Créer un nouvel utilisateur",
-        "description": "Créer un nouvel utilisateur (accès réservé aux secrétaires)",
+        "description": "Créer un nouvel utilisateur dans le système. **Accès :** Secrétaire uniquement. Les autres rôles recevront une erreur 403.",
         "tags": ["Utilisateur"],
         "security": [{ "bearerAuth": [] }],
         "requestBody": {
@@ -147,13 +161,16 @@
           },
           "401": { "description": "Token manquant ou invalide" },
           "403": { 
-            "description": "Accès refusé - Rôle secrétaire requis",
+            "description": "Accès refusé - Seule la secrétaire peut créer des comptes utilisateurs",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "erreur": { "type": "string" }
+                    "erreur": { 
+                      "type": "string",
+                      "example": "Accès refusé. Rôle requis: secretaire, Rôle actuel: etudiant"
+                    }
                   }
                 }
               }
@@ -179,7 +196,7 @@
     "/Utilisateur/me": {
       "get": {
         "summary": "Profil utilisateur courant",
-        "description": "Récupère les informations de l'utilisateur connecté avec son rôle",
+        "description": "Récupère les informations de l'utilisateur connecté avec son rôle. **Accès :** Tous les utilisateurs authentifiés",
         "tags": ["Utilisateur"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
@@ -200,7 +217,7 @@
     "/Utilisateur/my-role": {
       "get": {
         "summary": "Informations de rôle de l'utilisateur",
-        "description": "Récupère les informations de rôle de l'utilisateur connecté",
+        "description": "Récupère les informations de rôle de l'utilisateur connecté. **Accès :** Tous les utilisateurs authentifiés",
         "tags": ["Rôles"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
@@ -226,7 +243,7 @@
     "/Utilisateur/etudiant-only": {
       "get": {
         "summary": "Route réservée aux étudiants",
-        "description": "Route accessible uniquement aux utilisateurs avec le rôle 'etudiant'",
+        "description": "Route de test accessible uniquement aux utilisateurs avec le rôle 'etudiant'. **Accès :** Étudiants uniquement",
         "tags": ["Rôles"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
@@ -264,7 +281,7 @@
     "/Utilisateur/professeur-only": {
       "get": {
         "summary": "Route réservée aux professeurs",
-        "description": "Route accessible uniquement aux utilisateurs avec le rôle 'professeur'",
+        "description": "Route de test accessible uniquement aux utilisateurs avec le rôle 'professeur'. **Accès :** Professeurs uniquement",
         "tags": ["Rôles"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
@@ -302,7 +319,7 @@
     "/Utilisateur/secretaire-only": {
       "get": {
         "summary": "Route réservée aux secrétaires",
-        "description": "Route accessible uniquement aux utilisateurs avec le rôle 'secretaire'",
+        "description": "Route de test accessible uniquement aux utilisateurs avec le rôle 'secretaire'. **Accès :** Secrétaires uniquement",
         "tags": ["Rôles"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
@@ -340,7 +357,7 @@
     "/Utilisateur/admin": {
       "get": {
         "summary": "Route réservée aux administrateurs",
-        "description": "Route accessible aux utilisateurs avec le rôle 'professeur' ou 'secretaire'",
+        "description": "Route de test accessible aux utilisateurs avec le rôle 'professeur' ou 'secretaire'. **Accès :** Professeurs et secrétaires",
         "tags": ["Rôles"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
@@ -378,7 +395,7 @@
     "/Utilisateur": {
       "delete": {
         "summary": "Supprimer un utilisateur par identifiant (body)",
-        "description": "Supprime un utilisateur en passant l'identifiant dans le body",
+        "description": "Supprime un utilisateur en passant l'identifiant dans le body. **Accès :** Tous les utilisateurs authentifiés",
         "tags": ["Utilisateur"],
         "requestBody": {
           "required": true,
@@ -432,7 +449,7 @@
     "/Utilisateur/{identifiant}": {
       "delete": {
         "summary": "Supprimer un utilisateur par identifiant (path)",
-        "description": "Supprime un utilisateur en passant l'identifiant dans l'URL",
+        "description": "Supprime un utilisateur en passant l'identifiant dans l'URL. **Accès :** Tous les utilisateurs authentifiés",
         "tags": ["Utilisateur"],
         "parameters": [
           {
@@ -584,34 +601,50 @@
         "properties": {
           "identifiant": { 
             "type": "string",
-            "description": "Identifiant unique de l'utilisateur"
+            "description": "Identifiant unique de l'utilisateur",
+            "example": "nouveau_etudiant"
           },
           "nom": { 
             "type": "string",
-            "description": "Nom de famille"
+            "description": "Nom de famille",
+            "example": "Dupont"
           },
           "prenom": { 
             "type": "string",
-            "description": "Prénom"
+            "description": "Prénom",
+            "example": "Jean"
           },
           "email": { 
             "type": "string", 
             "format": "email",
-            "description": "Adresse email"
+            "description": "Adresse email",
+            "example": "jean.dupont@univ.fr"
           },
           "adresse": { 
             "type": "string",
-            "description": "Adresse postale"
+            "description": "Adresse postale",
+            "example": "123 Rue de la Paix"
           },
           "telephone": { 
             "type": "string",
-            "description": "Numéro de téléphone"
+            "description": "Numéro de téléphone",
+            "example": "0600000000"
           },
           "password": { 
             "type": "string",
             "format": "password",
-            "description": "Mot de passe (sera hashé)"
+            "description": "Mot de passe (sera hashé)",
+            "example": "motdepasse123"
           }
+        },
+        "example": {
+          "identifiant": "nouveau_etudiant",
+          "nom": "Dupont",
+          "prenom": "Jean",
+          "email": "jean.dupont@univ.fr",
+          "adresse": "123 Rue de la Paix",
+          "telephone": "0600000000",
+          "password": "motdepasse123"
         }
       }
     }
@@ -619,15 +652,15 @@
   "tags": [
     {
       "name": "Authentification",
-      "description": "Endpoints liés à l'authentification des utilisateurs"
+      "description": "Endpoints liés à l'authentification des utilisateurs. Aucune authentification requise."
     },
     {
       "name": "Utilisateur",
-      "description": "Gestion des utilisateurs (CRUD)"
+      "description": "Gestion des utilisateurs (CRUD). Authentification requise. Création réservée aux secrétaires."
     },
     {
       "name": "Rôles",
-      "description": "Endpoints de test et gestion des rôles"
+      "description": "Endpoints de test et gestion des rôles. Authentification et permissions spécifiques requises."
     }
   ]
 }
