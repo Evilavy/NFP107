@@ -1,0 +1,13 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "NFP107 DB",
+      "Group": "Servers",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "nfp_db",
+      "Username": "nfp_user",
+      "SSLMode": "prefer"
+    }
+  }
+}

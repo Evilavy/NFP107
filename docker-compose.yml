@@ -31,6 +31,7 @@ services:
       - "8080:80"
     volumes:
       - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost/misc/ping || exit 1"]
       interval: 10s
