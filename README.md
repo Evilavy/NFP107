@@ -35,6 +35,19 @@ curl -X POST http://localhost:3000/users \
 
 Les données PostgreSQL persistent dans le volume Docker `pgdata`.
 
+## pgAdmin (administration PostgreSQL)
+- URL: http://localhost:8080
+- Connexion pgAdmin:
+  - Email: `admin@example.com`
+  - Mot de passe: `admin123`
+- Serveur PostgreSQL préconfiguré dans pgAdmin: `NFP107 DB`
+  - Host: `db`
+  - Port: `5432`
+  - Maintenance DB: `nfp_db`
+  - Username: `nfp_user`
+  - Password: `nfp_password`
+  - Astuce: au premier clic sur le serveur dans pgAdmin, entrez/sauvegardez le mot de passe `nfp_password`.
+
 ## ⚡ Workflow quotidien avec Git
 Ce guide explique comment mettre à jour ta branche de travail, coder, et envoyer tes modifications proprement.
 
