@@ -44,11 +44,6 @@ CREATE TABLE Salle(
    PRIMARY KEY(Id_Salle)
 );
 
-CREATE TABLE Date_(
-   Id_Date DATE,
-   PRIMARY KEY(Id_Date)
-);
-
 CREATE TABLE Etudiant(
    identifiant VARCHAR(50),
    Id_Filiere INTEGER NOT NULL,
@@ -72,14 +67,13 @@ CREATE TABLE Note(
 CREATE TABLE Planning(
    Id_Planning SERIAL,
    plage_horaire VARCHAR(50),
+   date_ DATE NOT NULL,
    identifiant VARCHAR(50) NOT NULL,
-   Id_Date DATE NOT NULL,
    Id_Promo INTEGER NOT NULL,
    code VARCHAR(50) NOT NULL,
    Id_Salle INTEGER NOT NULL,
    PRIMARY KEY(Id_Planning),
    FOREIGN KEY(identifiant) REFERENCES Professeur(identifiant),
-   FOREIGN KEY(Id_Date) REFERENCES Date_(Id_Date),
    FOREIGN KEY(Id_Promo) REFERENCES Promo(Id_Promo),
    FOREIGN KEY(code) REFERENCES UE(code),
    FOREIGN KEY(Id_Salle) REFERENCES Salle(Id_Salle)
