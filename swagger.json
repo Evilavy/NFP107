@@ -1,18 +1,19 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "NFP107 Personne API",
+    "title": "NFP107 API - Gestion des Utilisateurs avec Rôles",
     "version": "1.0.0",
-    "description": "Simple API to manage users."
+    "description": "API pour gérer les utilisateurs avec système de rôles (étudiant, professeur, secrétaire)"
   },
   "servers": [
     { "url": "http://localhost:3000" }
   ],
   "paths": {
-    "/Personne/login": {
+    "/Utilisateur/login": {
       "post": {
         "summary": "Connexion utilisateur",
-        "tags": ["Personne"],
+        "description": "Authentification d'un utilisateur et génération d'un token JWT avec rôle",
+        "tags": ["Authentification"],
         "requestBody": {
           "required": true,
           "content": {
@@ -21,8 +22,15 @@
                 "type": "object",
                 "required": ["identifiant", "password"],
                 "properties": {
-                  "identifiant": { "type": "string" },
-                  "password": { "type": "string", "format": "password" }
+                  "identifiant": { 
+                    "type": "string",
+                    "description": "Identifiant de l'utilisateur"
+                  },
+                  "password": { 
+                    "type": "string", 
+                    "format": "password",
+                    "description": "Mot de passe de l'utilisateur"
+                  }
                 }
               }
             }
@@ -36,21 +44,51 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "token": { "type": "string" },
-                    "user": { "$ref": "#/components/schemas/UtilisateurSansPassword" }
+                    "token": { 
+                      "type": "string",
+                      "description": "Token JWT contenant les informations utilisateur et rôle"
+                    },
+                    "user": { "$ref": "#/components/schemas/UtilisateurAvecRole" }
                   }
                 }
               }
             }
           },
-          "401": { "description": "Identifiants invalides" }
+          "400": { 
+            "description": "Données manquantes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { 
+            "description": "Identifiants invalides",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Erreur interne du serveur" }
         }
       }
     },
-    "/Personne": {
+    "/Utilisateur": {
       "get": {
-        "summary": "Lister les personnes",
-        "tags": ["Personne"],
+        "summary": "Lister tous les utilisateurs",
+        "description": "Récupère la liste de tous les utilisateurs (authentification requise)",
+        "tags": ["Utilisateur"],
         "security": [{ "bearerAuth": [] }],
         "responses": {
           "200": {
@@ -59,16 +97,22 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Utilisateur" }
+                  "items": { "$ref": "#/components/schemas/UtilisateurSansPassword" }
                 }
               }
             }
-          }
+          },
+          "401": { "description": "Token manquant ou invalide" },
+          "500": { "description": "Erreur interne du serveur" }
         }
-      },
+      }
+    },
+    "/Utilisateur/create": {
       "post": {
-        "summary": "Créer une personne",
-        "tags": ["Personne"],
+        "summary": "Créer un nouvel utilisateur",
+        "description": "Créer un nouvel utilisateur (accès réservé aux secrétaires)",
+        "tags": ["Utilisateur"],
+        "security": [{ "bearerAuth": [] }],
         "requestBody": {
           "required": true,
           "content": {
@@ -81,39 +125,314 @@
         },
         "responses": {
           "201": {
-            "description": "Personne créée",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/Utilisateur" }
-              }
-            }
-          },
-          "400": { "description": "Bad request" },
-          "409": { "description": "Conflit (email déjà existant)" }
-        }
-      }
-    },
-    "/Personne/me": {
-      "get": {
-        "summary": "Profil utilisateur courant",
-        "tags": ["Personne"],
-        "security": [{ "bearerAuth": [] }],
-        "responses": {
-          "200": {
-            "description": "Utilisateur courant",
+            "description": "Personne créée avec succès",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/UtilisateurSansPassword" }
               }
             }
           },
-          "401": { "description": "Non authentifié" }
+          "400": { 
+            "description": "Données manquantes ou invalides",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token manquant ou invalide" },
+          "403": { 
+            "description": "Accès refusé - Rôle secrétaire requis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "409": { 
+            "description": "Conflit - identifiant ou email déjà existant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      }
+    },
+    "/Utilisateur/me": {
+      "get": {
+        "summary": "Profil utilisateur courant",
+        "description": "Récupère les informations de l'utilisateur connecté avec son rôle",
+        "tags": ["Utilisateur"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Profil utilisateur avec rôle",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UtilisateurAvecRole" }
+              }
+            }
+          },
+          "401": { "description": "Token manquant ou invalide" },
+          "404": { "description": "Utilisateur introuvable" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      }
+    },
+    "/Utilisateur/my-role": {
+      "get": {
+        "summary": "Informations de rôle de l'utilisateur",
+        "description": "Récupère les informations de rôle de l'utilisateur connecté",
+        "tags": ["Rôles"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Informations de rôle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "role": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/UtilisateurToken" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token manquant ou invalide" }
+        }
+      }
+    },
+    "/Utilisateur/etudiant-only": {
+      "get": {
+        "summary": "Route réservée aux étudiants",
+        "description": "Route accessible uniquement aux utilisateurs avec le rôle 'etudiant'",
+        "tags": ["Rôles"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Accès autorisé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/UtilisateurToken" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token manquant ou invalide" },
+          "403": { 
+            "description": "Accès refusé - Rôle étudiant requis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Utilisateur/professeur-only": {
+      "get": {
+        "summary": "Route réservée aux professeurs",
+        "description": "Route accessible uniquement aux utilisateurs avec le rôle 'professeur'",
+        "tags": ["Rôles"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Accès autorisé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/UtilisateurToken" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token manquant ou invalide" },
+          "403": { 
+            "description": "Accès refusé - Rôle professeur requis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Utilisateur/secretaire-only": {
+      "get": {
+        "summary": "Route réservée aux secrétaires",
+        "description": "Route accessible uniquement aux utilisateurs avec le rôle 'secretaire'",
+        "tags": ["Rôles"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Accès autorisé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/UtilisateurToken" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token manquant ou invalide" },
+          "403": { 
+            "description": "Accès refusé - Rôle secrétaire requis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Utilisateur/admin": {
+      "get": {
+        "summary": "Route réservée aux administrateurs",
+        "description": "Route accessible aux utilisateurs avec le rôle 'professeur' ou 'secretaire'",
+        "tags": ["Rôles"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Accès autorisé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string" },
+                    "user": { "$ref": "#/components/schemas/UtilisateurToken" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Token manquant ou invalide" },
+          "403": { 
+            "description": "Accès refusé - Rôle professeur ou secrétaire requis",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Utilisateur": {
+      "delete": {
+        "summary": "Supprimer un utilisateur par identifiant (body)",
+        "description": "Supprime un utilisateur en passant l'identifiant dans le body",
+        "tags": ["Utilisateur"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["identifiant"],
+                "properties": {
+                  "identifiant": { 
+                    "type": "string",
+                    "description": "Identifiant de la personne à supprimer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Personne supprimée avec succès" },
+          "400": { 
+            "description": "Identifiant manquant",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "404": { 
+            "description": "Personne introuvable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "description": "Erreur interne du serveur" }
         }
       }
     },
     "/Personne/{identifiant}": {
       "delete": {
-        "summary": "Supprimer une personne par identifiant",
+        "summary": "Supprimer une personne par identifiant (path)",
+        "description": "Supprime un utilisateur en passant l'identifiant dans l'URL",
         "tags": ["Personne"],
         "parameters": [
           {
@@ -121,58 +440,38 @@
             "name": "identifiant",
             "required": true,
             "schema": { "type": "string" },
-            "description": "Identifiant de la personne (clé primaire)"
+            "description": "Identifiant de la personne à supprimer"
           }
         ],
         "responses": {
-          "204": { "description": "Personne supprimée" },
-          "400": { "description": "Identifiant invalide" },
-          "404": { "description": "Personne introuvable" }
-        }
-      }
-    },
-    "/enseignants": {
-      "get": {
-        "summary": "Liste des enseignants",
-        "tags": ["Enseignants"],
-        "responses": {
-          "200": {
-            "description": "Une liste d'enseignants",
+          "204": { "description": "Personne supprimée avec succès" },
+          "400": { 
+            "description": "Identifiant invalide",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/Enseignant" }
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
                 }
               }
             }
-          }
-        }
-      },
-      "post": {
-        "summary": "Créer un enseignant",
-        "tags": ["Enseignants"],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateEnseignantInput"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Enseignant créé",
+          },
+          "404": { 
+            "description": "Personne introuvable",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Enseignant" }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erreur": { "type": "string" }
+                  }
+                }
               }
             }
           },
-          "400": { "description": "Bad request" },
-          "409": { "description": "Conflict (email already exists)" }
+          "500": { "description": "Erreur interne du serveur" }
         }
       }
     }
@@ -182,73 +481,155 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "description": "Token JWT obtenu via /Personne/login"
       }
     },
     "schemas": {
       "UtilisateurSansPassword": {
         "type": "object",
         "properties": {
-          "identifiant": { "type": "string" },
-          "nom": { "type": "string" },
-          "prenom": { "type": "string" },
-          "email": { "type": "string", "format": "email" },
-          "adresse": { "type": "string" },
-          "telephone": { "type": "string" }
+          "identifiant": { 
+            "type": "string",
+            "description": "Identifiant unique de l'utilisateur"
+          },
+          "nom": { 
+            "type": "string",
+            "description": "Nom de famille"
+          },
+          "prenom": { 
+            "type": "string",
+            "description": "Prénom"
+          },
+          "email": { 
+            "type": "string", 
+            "format": "email",
+            "description": "Adresse email"
+          },
+          "adresse": { 
+            "type": "string",
+            "description": "Adresse postale"
+          },
+          "telephone": { 
+            "type": "string",
+            "description": "Numéro de téléphone"
+          }
         }
       },
-      "Utilisateur": {
+      "UtilisateurAvecRole": {
         "type": "object",
         "properties": {
-          "identifiant": { "type": "string" },
-          "nom": { "type": "string" },
-          "prenom": { "type": "string" },
-          "email": { "type": "string", "format": "email" },
-          "adresse": { "type": "string" },
-          "telephone": { "type": "string" },
-          "password": { "type": "string" }
+          "identifiant": { 
+            "type": "string",
+            "description": "Identifiant unique de l'utilisateur"
+          },
+          "nom": { 
+            "type": "string",
+            "description": "Nom de famille"
+          },
+          "prenom": { 
+            "type": "string",
+            "description": "Prénom"
+          },
+          "email": { 
+            "type": "string", 
+            "format": "email",
+            "description": "Adresse email"
+          },
+          "adresse": { 
+            "type": "string",
+            "description": "Adresse postale"
+          },
+          "telephone": { 
+            "type": "string",
+            "description": "Numéro de téléphone"
+          },
+          "role": { 
+            "type": "string",
+            "enum": ["etudiant", "professeur", "secretaire"],
+            "description": "Rôle de l'utilisateur"
+          }
+        }
+      },
+      "UtilisateurToken": {
+        "type": "object",
+        "properties": {
+          "identifiant": { 
+            "type": "string",
+            "description": "Identifiant unique de l'utilisateur"
+          },
+          "email": { 
+            "type": "string", 
+            "format": "email",
+            "description": "Adresse email"
+          },
+          "nom": { 
+            "type": "string",
+            "description": "Nom de famille"
+          },
+          "prenom": { 
+            "type": "string",
+            "description": "Prénom"
+          },
+          "role": { 
+            "type": "string",
+            "enum": ["etudiant", "professeur", "secretaire"],
+            "description": "Rôle de l'utilisateur"
+          }
         }
       },
       "CreateUtilisateurInput": {
         "type": "object",
         "required": ["identifiant", "nom", "prenom", "email", "adresse", "telephone", "password"],
         "properties": {
-          "identifiant": { "type": "string" },
-          "nom": { "type": "string" },
-          "prenom": { "type": "string" },
-          "email": { "type": "string", "format": "email" },
-          "adresse": { "type": "string" },
-          "telephone": { "type": "string" },
-          "password": { "type": "string" }
-        }
-      },
-      "Enseignant": {
-        "type": "object",
-        "properties": {
-          "identifiant": { "type": "string" },
-          "nom": { "type": "string" },
-          "prenom": { "type": "string" },
-          "email": { "type": "string", "format": "email" },
-          "adresse": { "type": "string" },
-          "telephone": { "type": "string", "format": "phone_number" },
-          "mdp": { "type": "string", "format": "password" },
-          "created_at": { "type": "string", "format": "date-time" }
-        }
-      },
-      "CreateEnseignantInput": {
-        "type": "object",
-        "required": ["nom", "prenom", "email", "adresse", "telephone", "mdp"],
-        "properties": {
-          "nom": { "type": "string" },
-          "prenom": { "type": "string" },
-          "email": { "type": "string", "format": "email" },
-          "adresse": { "type": "string" },
-          "telephone": { "type": "string", "format": "phone_number" },
-          "mdp": { "type": "string", "format": "password" }
+          "identifiant": { 
+            "type": "string",
+            "description": "Identifiant unique de l'utilisateur"
+          },
+          "nom": { 
+            "type": "string",
+            "description": "Nom de famille"
+          },
+          "prenom": { 
+            "type": "string",
+            "description": "Prénom"
+          },
+          "email": { 
+            "type": "string", 
+            "format": "email",
+            "description": "Adresse email"
+          },
+          "adresse": { 
+            "type": "string",
+            "description": "Adresse postale"
+          },
+          "telephone": { 
+            "type": "string",
+            "description": "Numéro de téléphone"
+          },
+          "password": { 
+            "type": "string",
+            "format": "password",
+            "description": "Mot de passe (sera hashé)"
+          }
         }
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Authentification",
+      "description": "Endpoints liés à l'authentification des utilisateurs"
+    },
+    {
+      "name": "Personne",
+      "description": "Gestion des utilisateurs (CRUD)"
+    },
+    {
+      "name": "Rôles",
+      "description": "Endpoints de test et gestion des rôles"
+    }
+  ]
 }
 
 
