@@ -1,6 +1,5 @@
 const express = require('express');
 const { pool } = require('../lib/db');
-const crypto = require('crypto');
 
 const router = express.Router();
 
@@ -22,7 +21,6 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ erreur: 'nom_filiere est obligatoire' });
   }
   try {
-    const hashedPassword = crypto.createHash('sha512').update(password).digest('hex');
     const insertQuery = `
       INSERT INTO Filiere (nom_filiere)
       VALUES ($1)
