@@ -38,6 +38,34 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PATCH /Personne - Modifie une personne { identifiant, nom, prenom, email, adresse, telephone, password }
+router.patch('/', async (req, res) => {
+  const { identifiant, nom, prenom, email, adresse, telephone, password } = req.body;
+  if (!identifiant || !nom || !prenom || !email || !adresse || !telephone || !password) {
+    return res.status(400).json({ erreur: 'identifiant, nom, prenom, email, adresse, telephone et password sont obligatoires' });
+  }
+  try {
+    const updateQuery = `
+      UPDATE Utilisateur
+      SET nom = $1, prenom = $2, email = $3, adresse = $4, telephone = $5, password = $6
+      WHERE identifiant = $7
+      RETURNING identifiant, nom, prenom, email, adresse, telephone, password
+    `;
+    const values = [nom, prenom, email, adresse, telephone, password, identifiant];
+    const result = await pool.query(updateQuery, values);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ erreur: 'Personne introuvable' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error('PATCH /Personne erreur :', err);
+    if (err.code === '23505') { // violation de contrainte unique
+      return res.status(409).json({ erreur: 'identifiant ou email déjà existant' });
+    }
+    res.status(500).json({ erreur: "Erreur interne du serveur" });
+  }
+});
+
 // DELETE /Personne - supprimer une personne par identifiant (body)
 router.delete('/', async (req, res) => {
   const { identifiant } = req.body;
