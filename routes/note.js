@@ -31,8 +31,13 @@ router.post('/', async (req, res) => {
     res.status(201).json(result.rows[0]);
 
     // Quand une nouvelle note est disponible, l'étudiant concerné est notifié (via mail) 
-    
-    // le lendemain à 8h (afin de laisser le temps à l'enseignant de modifier la note en cas d'erreur de saisie)
+    // Planifier une tâche pour le lendemain à 8h
+    // const task = cron.schedule("0 8 * * *", () => {
+    //   console.log("📧 email nouvelle note disponible à envoyer");
+
+      // On arrête la tâche pour qu’elle ne s’exécute qu’une seule fois
+      // task.stop();
+    // });
   } catch (err) {
     console.error('POST /Note erreur :', err);
     if (err.code === '23505') { // violation de contrainte unique
