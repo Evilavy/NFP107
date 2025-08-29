@@ -26,6 +26,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
 app.use('/Personne', personneRouter);
+app.use('/Planning', planningRouter);
 
 // Server
 const PORT = process.env.PORT || 3000;

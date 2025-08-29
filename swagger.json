@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "NFP107 Personne API",
+    "title": "NFP107 API",
     "version": "1.0.0",
-    "description": "Simple API to manage users."
+    "description": "API pour la gestion des utilisateurs, enseignants et plannings."
   },
   "servers": [
     { "url": "http://localhost:3000" }
@@ -175,6 +175,164 @@
           "409": { "description": "Conflict (email already exists)" }
         }
       }
+    },
+    "/planning": {
+      "get": {
+        "summary": "Lister tous les plannings",
+        "tags": ["Planning"],
+        "responses": {
+          "200": {
+            "description": "Liste des plannings avec informations détaillées",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/PlanningDetaille" }
+                }
+              }
+            }
+          },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      },
+      "post": {
+        "summary": "Créer un nouveau planning",
+        "tags": ["Planning"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlanningInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Planning créé",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Planning" }
+              }
+            }
+          },
+          "400": { "description": "Données invalides ou références introuvables" },
+          "409": { "description": "Conflit de planning (salle déjà occupée)" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      },
+      "delete": {
+        "summary": "Supprimer un planning par ID (body)",
+        "tags": ["Planning"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["Id_Planning"],
+                "properties": {
+                  "Id_Planning": {
+                    "type": "integer",
+                    "description": "ID du planning à supprimer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Planning supprimé" },
+          "400": { "description": "ID invalide" },
+          "404": { "description": "Planning introuvable" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      }
+    },
+    "/planning/{id}": {
+      "get": {
+        "summary": "Récupérer un planning spécifique",
+        "tags": ["Planning"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID du planning"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Détails du planning",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PlanningDetaille" }
+              }
+            }
+          },
+          "400": { "description": "ID invalide" },
+          "404": { "description": "Planning introuvable" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      },
+      "put": {
+        "summary": "Modifier un planning existant",
+        "tags": ["Planning"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID du planning à modifier"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePlanningInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Planning modifié",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Planning" }
+              }
+            }
+          },
+          "400": { "description": "Données invalides ou références introuvables" },
+          "404": { "description": "Planning introuvable" },
+          "409": { "description": "Conflit de planning (salle déjà occupée)" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      },
+      "delete": {
+        "summary": "Supprimer un planning par ID",
+        "tags": ["Planning"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "ID du planning à supprimer"
+          }
+        ],
+        "responses": {
+          "204": { "description": "Planning supprimé" },
+          "400": { "description": "ID invalide" },
+          "404": { "description": "Planning introuvable" },
+          "500": { "description": "Erreur interne du serveur" }
+        }
+      }
     }
   },
   "components": {
@@ -245,6 +403,72 @@
           "adresse": { "type": "string" },
           "telephone": { "type": "string", "format": "phone_number" },
           "mdp": { "type": "string", "format": "password" }
+        }
+      },
+      "Planning": {
+        "type": "object",
+        "properties": {
+          "Id_Planning": { "type": "integer", "description": "ID unique du planning" },
+          "plage_horaire": { "type": "string", "description": "Plage horaire du cours (ex: 08h00-10h00)" },
+          "date_": { "type": "string", "format": "date", "description": "Date du cours" },
+          "identifiant": { "type": "string", "description": "Identifiant du professeur" },
+          "Id_Promo": { "type": "integer", "description": "ID de la promotion" },
+          "code": { "type": "string", "description": "Code de l'UE" },
+          "Id_Salle": { "type": "integer", "description": "ID de la salle" }
+        }
+      },
+      "PlanningDetaille": {
+        "type": "object",
+        "properties": {
+          "Id_Planning": { "type": "integer", "description": "ID unique du planning" },
+          "plage_horaire": { "type": "string", "description": "Plage horaire du cours" },
+          "date_": { "type": "string", "format": "date", "description": "Date du cours" },
+          "prof_identifiant": { "type": "string", "description": "Identifiant du professeur" },
+          "prof_nom": { "type": "string", "description": "Nom du professeur" },
+          "prof_prenom": { "type": "string", "description": "Prénom du professeur" },
+          "Id_Promo": { "type": "integer", "description": "ID de la promotion" },
+          "promo_nom": { "type": "string", "description": "Nom de la promotion" },
+          "ue_code": { "type": "string", "description": "Code de l'UE" },
+          "ue_intitule": { "type": "string", "description": "Intitulé de l'UE" },
+          "Id_Salle": { "type": "integer", "description": "ID de la salle" },
+          "code_salle": { "type": "string", "description": "Code de la salle" }
+        }
+      },
+      "CreatePlanningInput": {
+        "type": "object",
+        "required": ["plage_horaire", "date_", "identifiant", "Id_Promo", "code", "Id_Salle"],
+        "properties": {
+          "plage_horaire": { 
+            "type": "string", 
+            "description": "Plage horaire du cours",
+            "example": "08h00-10h00"
+          },
+          "date_": { 
+            "type": "string", 
+            "format": "date", 
+            "description": "Date du cours",
+            "example": "2025-08-29"
+          },
+          "identifiant": { 
+            "type": "string", 
+            "description": "Identifiant du professeur qui donne le cours",
+            "example": "PROF001"
+          },
+          "Id_Promo": { 
+            "type": "integer", 
+            "description": "ID de la promotion qui suit le cours",
+            "example": 1
+          },
+          "code": { 
+            "type": "string", 
+            "description": "Code de l'UE enseignée",
+            "example": "NFP107"
+          },
+          "Id_Salle": { 
+            "type": "integer", 
+            "description": "ID de la salle où se déroule le cours",
+            "example": 1
+          }
         }
       }
     }
