@@ -643,6 +643,97 @@
           "404": { "description": "Note introuvable" }
         }
       }
+    },
+    "/Filiere": {
+      "get": {
+        "summary": "Lister les filières",
+        "tags": ["Filiere"],
+        "responses": {
+          "200": {
+            "description": "Liste des filières",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Filiere" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une filière",
+        "tags": ["Filiere"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFiliereInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Filière créée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Filiere" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflit (filière déjà existante)" }
+        }
+      },
+      "put": {
+        "summary": "Modifier une filière",
+        "tags": ["Filiere"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFiliereInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Filière modifiée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Filiere" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflit" }
+        }
+      }
+    },
+    "/Filiere/{Id_filiere}": {
+      "delete": {
+        "summary": "Supprimer une filière par Id_filiere",
+        "tags": ["Filiere"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Id_filiere",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Id_filiere de la filière (clé primaire)"
+          }
+        ],
+        "responses": {
+          "204": { "description": "Filiere supprimée" },
+          "400": { "description": "Id_filiere invalide" },
+          "404": { "description": "Filiere introuvable" }
+        }
+      }
     }
     }
   },
@@ -847,6 +938,28 @@
           "code": {
             "$ref": "#/components/schemas/UE" 
           }
+        }
+      },
+      "Filiere": {
+        "type": "object",
+        "properties": {
+          "Id_filiere": { "type": "string" },
+          "nom_filiere": { "type": "string" }
+        }
+      },
+      "CreateFiliereInput": {
+        "type": "object",
+        "required": ["nom_filiere"],
+        "properties": {
+          "nom_filiere": { "type": "string" }
+        }
+      },
+      "UpdateFiliereInput": {
+        "type": "object",
+        "required": ["Id_filiere", "nom_filiere"],
+        "properties": {
+          "Id_filiere": { "type": "string" },
+          "nom_filiere": { "type": "string" }
         }
       }
     }
