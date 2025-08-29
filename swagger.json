@@ -117,7 +117,98 @@
           "400": { "description": "Bad request" },
           "409": { "description": "Conflict (email already exists)" }
         }
+      },
+    "/Promo": {
+      "get": {
+        "summary": "Lister les promos",
+        "tags": ["Promo"],
+        "responses": {
+          "200": {
+            "description": "Liste des promos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Promo" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une promo",
+        "tags": ["Promo"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePromoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Promo créée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Promo" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflit (Id_Promo déjà existant)" }
+        }
+      },
+      "put": {
+        "summary": "Modifier une promo",
+        "tags": ["Promo"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePromoInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Promo modifiée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Promo" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflit" }
+        }
       }
+    },
+    "/Promo/{Id_Promo}": {
+      "delete": {
+        "summary": "Supprimer une promo par Id_Promo",
+        "tags": ["Promo"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Id_Promo",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Id_Promo de la promo (clé primaire)"
+          }
+        ],
+        "responses": {
+          "204": { "description": "Promo supprimée" },
+          "400": { "description": "Id_Promo invalide" },
+          "404": { "description": "Promo introuvable" }
+        }
+      }
+    }
     }
   },
   "components": {
@@ -170,6 +261,31 @@
           "adresse": { "type": "string" },
           "telephone": { "type": "string", "format": "phone_number" },
           "mdp": { "type": "string", "format": "password" }
+        }
+      },
+      "Promo": {
+        "type": "object",
+        "properties": {
+          "Id_Promo": { "type": "integer" },
+          "nom": { "type": "string" },
+          "annee_universitaire": { "type": "string" }
+        }
+      },
+      "CreatePromoInput": {
+        "type": "object",
+        "required": ["Id_Promo", "nom", "annee_universitaire"],
+        "properties": {
+          "nom": { "type": "string" },
+          "annee_universitaire": { "type": "string" }
+        }
+      },
+      "UpdatePromoInput": {
+        "type": "object",
+        "required": ["nom", "annee_universitaire"],
+        "properties": {
+          "Id_Promo": { "type": "integer" },
+          "nom": { "type": "string" },
+          "annee_universitaire": { "type": "string" }
         }
       }
     }
