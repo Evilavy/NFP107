@@ -52,6 +52,8 @@ services:
       DB_USER: nfp_user
       DB_PASSWORD: nfp_password
       DB_NAME: nfp_db
+      JWT_SECRET: change-me-in-prod
+      JWT_EXPIRES_IN: 2h
     ports:
       - "3000:3000"
 
