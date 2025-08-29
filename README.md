@@ -35,6 +35,43 @@ curl -X POST http://localhost:3000/users \
 
 Les données PostgreSQL persistent dans le volume Docker `pgdata`.
 
+## ⚡ Workflow quotidien avec Git
+Ce guide explique comment mettre à jour ta branche de travail, coder, et envoyer tes modifications proprement.
+
+### 1. Récupérer les dernières modifications (avant de bosser)
+On se place sur la branche `develop` et on récupère les mises à jour du repo distant :
+```bash
+git checkout develop
+git pull origin develop
+```
+
+### 2. Revenir sur ta branche et la mettre à jour
+Ensuite, on revient sur sa branche de travail (exemple : `feature/enseignants`) et on la synchronise avec `develop` :
+```bash
+git checkout feature/enseignants
+git merge develop   # ou: git rebase develop si vous êtes à l’aise
+```
+
+### 3. Coder, ajouter et commit
+Après avoir fait tes changements, ajoute-les et crée un commit :
+```bash
+git add .
+git commit -m "Ajout des routes enseignants"
+```
+
+### 4. Envoyer ton travail
+Pousse ton travail sur ta branche distante :
+```bash
+git push origin feature/enseignants
+```
+
+### 5. Créer une Pull Request
+Quand ta tâche est terminée, ouvre une Pull Request (PR) :
+- De : `feature/ta-branche`
+- Vers : `develop`
+
+⚠️ Ne merge pas directement sur `main`. Le merge vers `main` ne se fera qu’une fois que toutes les features sont validées.
+
 ## Redémarrer après un pull (ATTENTION: réinitialise la base de données)
 Après un `git pull`, pour repartir proprement et reconstruire les services Docker:
 ```bash
