@@ -215,30 +215,4 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-<<<<<<< Updated upstream
-// DELETE /planning - supprimer un planning par ID (body)
-router.delete('/', async (req, res) => {
-  const { Id_Planning } = req.body;
-  
-  if (!Id_Planning || isNaN(parseInt(Id_Planning))) {
-    return res.status(400).json({ erreur: "Id_Planning est obligatoire et doit être un nombre" });
-  }
-  
-  try {
-    const deleteQuery = 'DELETE FROM Planning WHERE Id_Planning = $1';
-    const result = await pool.query(deleteQuery, [parseInt(Id_Planning)]);
-    
-    if (result.rowCount === 0) {
-      return res.status(404).json({ erreur: 'Planning introuvable' });
-    }
-    
-    return res.status(204).send();
-  } catch (err) {
-    console.error('DELETE /planning erreur :', err);
-    return res.status(500).json({ erreur: "Erreur interne du serveur" });
-  }
-});
-
-=======
->>>>>>> Stashed changes
 module.exports = router;
