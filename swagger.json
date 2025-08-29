@@ -461,7 +461,8 @@
           "400": { "description": "Code invalide" },
           "404": { "description": "UE introuvable" }
         }
-      },
+      }
+    },
     "/Promo": {
       "get": {
         "summary": "Lister les promos",
@@ -734,7 +735,98 @@
           "404": { "description": "Filiere introuvable" }
         }
       }
-    }
+    },
+    "/Salle": {
+      "get": {
+        "summary": "Lister les salles",
+        "tags": ["Salle"],
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Liste des salles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Salle" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une salle",
+        "tags": ["Salle"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSalleInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Salle créée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Salle" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflit (Id_Salle déjà existant)" }
+        }
+      },
+      "put": {
+        "summary": "Modifier une salle",
+        "tags": ["Salle"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSalleInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Salle modifiée",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Salle" }
+              }
+            }
+          },
+          "400": { "description": "Bad request" },
+          "409": { "description": "Conflit" }
+        }
+      }
+    },
+    "/Salle/{Id_Salle}": {
+      "delete": {
+        "summary": "Supprimer une salle par Id_Salle",
+        "tags": ["Salle"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Id_Salle",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Id_Salle de la salle (clé primaire)"
+          }
+        ],
+        "responses": {
+          "204": { "description": "Salle supprimée" },
+          "400": { "description": "Id_Salle invalide" },
+          "404": { "description": "Salle introuvable" }
+        }
+      }
     }
   },
   "components": {
@@ -900,7 +992,8 @@
           "nom": { "type": "string" },
           "annee_universitaire": { "type": "string" }
         }
-      },"Note": {
+      },
+      "Note": {
         "type": "object",
         "properties": {
           "Id_Note": { "type": "string" },
@@ -958,26 +1051,38 @@
         "type": "object",
         "required": ["Id_filiere", "nom_filiere"],
         "properties": {
-          "Id_filiere": { "type": "string" },
-          "nom_filiere": { "type": "string" }
+          "nom": { "type": "string" },
+          "prenom": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "adresse": { "type": "string" },
+          "telephone": { "type": "string", "format": "phone_number" },
+          "mdp": { "type": "string", "format": "password" }
+        }
+      },
+      "Salle": {
+        "type": "object",
+        "properties": {
+          "Id_Salle": { "type": "string" },
+          "code_salle": { "type": "string" }
+        }
+      },
+      "CreateSalleInput": {
+        "type": "object",
+        "required": ["code_salle"],
+        "properties": {
+          "code_salle": { "type": "string" }
+        }
+      },
+      "UpdateSalleInput": {
+        "type": "object",
+        "required": ["Id_Salle", "code_salle"],
+        "properties": {
+          "Id_Salle": { "type": "string" },
+          "code_salle": { "type": "string" }
         }
       }
     }
-  },
-  "tags": [
-    {
-      "name": "Authentification",
-      "description": "Endpoints liés à l'authentification des utilisateurs"
-    },
-    {
-      "name": "Utilisateur",
-      "description": "Gestion des utilisateurs (CRUD)"
-    },
-    {
-      "name": "Rôles",
-      "description": "Endpoints de test et gestion des rôles"
-    }
-  ]
+  }
 }
 
 
