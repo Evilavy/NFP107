@@ -56,7 +56,7 @@ CREATE TABLE Etudiant(
 
 CREATE TABLE Note(
    Id_Note SERIAL,
-   note VARCHAR(50),
+   note NUMERIC(4,2),
    identifiant VARCHAR(50) NOT NULL,
    code VARCHAR(50) NOT NULL,
    PRIMARY KEY(Id_Note),
