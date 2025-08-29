@@ -35,6 +35,14 @@ curl -X POST http://localhost:3000/users \
 
 Les données PostgreSQL persistent dans le volume Docker `pgdata`.
 
+## Redémarrer après un pull (ATTENTION: réinitialise la base de données)
+Après un `git pull`, pour repartir proprement et reconstruire les services Docker:
+```bash
+docker compose down -v
+docker compose up -d --build
+```
+Attention: l'option `-v` supprime les volumes, donc toutes les données de la base seront perdues.
+
 ## Variables d'environnement (API)
 L'API lit ces variables (déjà définies dans `docker-compose.yml` pour l'exécution via Docker):
 - `PORT` (par défaut: 3000)
@@ -77,7 +85,7 @@ npm start
 
 ## Structure du projet
 - `index.js` — Entrée Express, montage routes et Swagger
-- `routes/users.js` — Endpoints `GET /users`, `POST /users`
+- `routes/personne.js` — Endpoints `GET /users`, `POST /users`
 - `lib/db.js` — Connexion PostgreSQL (pg Pool)
 - `swagger.json` — Spécification OpenAPI 3
 - `db/init.sql` — Script d'init pour créer la table `users`
