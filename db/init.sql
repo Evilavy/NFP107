@@ -1,4 +1,5 @@
-
+-- Activer l'extension pgcrypto
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE Promo(
    Id_Promo SERIAL,
