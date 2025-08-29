@@ -18,6 +18,26 @@ services:
       retries: 10
       start_period: 5s
 
+  pgadmin:
+    image: dpage/pgadmin4:8.13
+    container_name: nfp107_pgadmin
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@nfp107.com
+      PGADMIN_DEFAULT_PASSWORD: evilavy
+    ports:
+      - "8080:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost/misc/ping || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
   api:
     build: .
     container_name: nfp107_api
@@ -36,5 +56,6 @@ services:
 
 volumes:
   pgdata:
+  pgadmin_data:
 
 
