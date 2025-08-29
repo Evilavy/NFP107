@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const { pool } = require('./lib/db');
 const personneRouter = require('./routes/personne');
+const filiereRouter = require('./routes/filiere');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Routes
 app.use('/Personne', personneRouter);
+app.use('/Filiere', filiereRouter);
 
 // Server
 const PORT = process.env.PORT || 3000;
