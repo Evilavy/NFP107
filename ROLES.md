@@ -13,7 +13,7 @@ L'application utilise un système de rôles basé sur JWT pour contrôler l'acc�
 ### Connexion (Login)
 
 ```http
-POST /Personne/login
+POST /Utilisateur/login
 Content-Type: application/json
 
 {
@@ -54,15 +54,15 @@ Vérifie que l'utilisateur a l'un des rôles spécifiés dans le tableau.
 
 ```http
 # Route accessible uniquement aux étudiants
-GET /Personne/etudiant-only
+GET /Utilisateur/etudiant-only
 Authorization: Bearer <token>
 
 # Route accessible uniquement aux professeurs
-GET /Personne/professeur-only
+GET /Utilisateur/professeur-only
 Authorization: Bearer <token>
 
 # Route accessible uniquement aux secrétaires
-GET /Personne/secretaire-only
+GET /Utilisateur/secretaire-only
 Authorization: Bearer <token>
 ```
 
@@ -70,7 +70,7 @@ Authorization: Bearer <token>
 
 ```http
 # Route accessible aux professeurs ET secrétaires
-GET /Personne/admin
+GET /Utilisateur/admin
 Authorization: Bearer <token>
 ```
 
@@ -78,7 +78,7 @@ Authorization: Bearer <token>
 
 ```http
 # Obtenir les informations de rôle de l'utilisateur connecté
-GET /Personne/my-role
+GET /Utilisateur/my-role
 Authorization: Bearer <token>
 ```
 

@@ -429,11 +429,11 @@
         }
       }
     },
-    "/Personne/{identifiant}": {
+    "/Utilisateur/{identifiant}": {
       "delete": {
-        "summary": "Supprimer une personne par identifiant (path)",
+        "summary": "Supprimer un utilisateur par identifiant (path)",
         "description": "Supprime un utilisateur en passant l'identifiant dans l'URL",
-        "tags": ["Personne"],
+        "tags": ["Utilisateur"],
         "parameters": [
           {
             "in": "path",
@@ -482,7 +482,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
-        "description": "Token JWT obtenu via /Personne/login"
+        "description": "Token JWT obtenu via /Utilisateur/login"
       }
     },
     "schemas": {
@@ -622,7 +622,7 @@
       "description": "Endpoints liés à l'authentification des utilisateurs"
     },
     {
-      "name": "Personne",
+      "name": "Utilisateur",
       "description": "Gestion des utilisateurs (CRUD)"
     },
     {
