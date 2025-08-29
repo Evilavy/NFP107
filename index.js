@@ -14,6 +14,7 @@ const promoRouter = require('./routes/promo');
 const noteRouter = require('./routes/note');
 const filiereRouter = require('./routes/filiere');
 const salleRouter = require('./routes/salle');
+const correspondanceFiliereUERouter = require('./routes/correspondance-filiere-ue');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/Promo', promoRouter);
 app.use('/Note', noteRouter);
 app.use('/Filiere', filiereRouter);
 app.use('/Salle', salleRouter);
+app.use('/Correspondance-Filiere-UE', personneRouter);
 
 // Server
 const PORT = process.env.PORT || 3000;
