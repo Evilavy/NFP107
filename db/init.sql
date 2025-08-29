@@ -385,3 +385,17 @@ Ne fonctionne pas
 INSERT INTO Planning (heure_debut, heure_fin, date_, identifiant, id_promo, code, id_salle)
 VALUES ('10:00', '11:00', '2024-09-15', 'jmartin', 1, 'UE102', 1);
 */
+
+CREATE OR REPLACE FUNCTION verifier_ects()
+RETURNS TABLE(id_filiere INT, total_ects INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT correspond.id_filiere, SUM(ue.nombre_ects)::INT AS total_ects
+    FROM correspond
+    INNER JOIN ue ON correspond.code = ue.code
+    GROUP BY correspond.id_filiere
+    HAVING SUM(ue.nombre_ects) <> 60;
+END;
+$$;
