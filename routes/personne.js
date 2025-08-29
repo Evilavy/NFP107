@@ -1,13 +1,14 @@
 const express = require('express');
 const { pool } = require('../lib/db');
 const crypto = require('crypto');
+const { signUserToken, authenticateBearer } = require('../lib/auth');
 
 const router = express.Router();
 
 // GET /Personne - récupérer toutes les personnes
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT identifiant, nom, prenom, email, adresse, telephone, password FROM Utilisateur ORDER BY identifiant ASC');
+    const result = await pool.query('SELECT identifiant, nom, prenom, email, adresse, telephone FROM Utilisateur ORDER BY identifiant ASC');
     res.json(result.rows);
   } catch (err) {
     console.error('GET /Personne erreur :', err);
@@ -26,7 +27,7 @@ router.post('/', async (req, res) => {
     const insertQuery = `
       INSERT INTO Utilisateur (identifiant, nom, prenom, email, adresse, telephone, password)
       VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING identifiant, nom, prenom, email, adresse, telephone, password
+      RETURNING identifiant, nom, prenom, email, adresse, telephone
     `;
     const values = [identifiant, nom, prenom, email, adresse, telephone, hashedPassword];
     const result = await pool.query(insertQuery, values);
@@ -37,6 +38,55 @@ router.post('/', async (req, res) => {
       return res.status(409).json({ erreur: 'identifiant ou email déjà existant' });
     }
     res.status(500).json({ erreur: "Erreur interne du serveur" });
+  }
+});
+
+router.post('/login', async (req, res) => {
+  const { identifiant, password } = req.body;
+  if (!identifiant || !password) {
+    return res.status(400).json({ erreur: 'identifiant, mdp sont obligatoires' });
+  }
+  try {
+    const hashedPassword = crypto.createHash('sha512').update(password).digest('hex');
+    const compareQuery = `
+      SELECT identifiant, nom, prenom, email, adresse, telephone
+      FROM Utilisateur
+      WHERE identifiant = $1 AND password = $2
+    `;
+    const values = [identifiant, hashedPassword];
+    const result = await pool.query(compareQuery, values);
+    if (result.rowCount === 0) {
+      return res.status(401).json({ erreur: 'Identifiants invalides' });
+    }
+    const user = result.rows[0];
+    const token = signUserToken({ identifiant: user.identifiant, email: user.email, nom: user.nom, prenom: user.prenom });
+    return res.status(200).json({ token, user });
+  } catch (err) {
+    console.error('POST /Personne/login erreur :', err);
+    res.status(500).json({ erreur: "Erreur interne du serveur" });
+  }
+})
+
+// GET /Personne/me - profil utilisateur authentifié
+router.get('/me', authenticateBearer, async (req, res) => {
+  const { identifiant } = req.user || {};
+  if (!identifiant) {
+    return res.status(401).json({ erreur: 'Token invalide' });
+  }
+  try {
+    const query = `
+      SELECT identifiant, nom, prenom, email, adresse, telephone
+      FROM Utilisateur
+      WHERE identifiant = $1
+    `;
+    const { rows, rowCount } = await pool.query(query, [identifiant]);
+    if (rowCount === 0) {
+      return res.status(404).json({ erreur: 'Utilisateur introuvable' });
+    }
+    return res.json(rows[0]);
+  } catch (err) {
+    console.error('GET /Personne/me erreur :', err);
+    return res.status(500).json({ erreur: 'Erreur interne du serveur' });
   }
 });
 
@@ -85,4 +135,4 @@ router.delete('/:identifiant', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router;  
